@@ -1,0 +1,1 @@
+{"inputs":["/workspaces/Watten/web/*/index.html","/workspaces/Watten/web/flutter_bootstrap.js","/workspaces/Watten/flutter/bin/cache/engine.stamp"],"outputs":["/workspaces/Watten/build/web/*/index.html","/workspaces/Watten/build/web/flutter_bootstrap.js"],"buildKey":"[{\"compileTarget\":\"dart2js\",\"renderer\":\"canvaskit\",\"mainJsPath\":\"main.dart.js\"},{}]"}
