@@ -55,16 +55,6 @@ class PlayerHalf extends StatefulWidget {
 }
 
 class _PlayerHalfState extends State<PlayerHalf> {
-  final TransformationController _zoom = TransformationController();
-
-  void _zoomIn() {
-    _zoom.value = _zoom.value.scaled(1.1);
-  }
-
-  void _zoomOut() {
-    _zoom.value = _zoom.value.scaled(0.9);
-  }
-
   @override
   Widget build(BuildContext context) {
     final isP1 = widget.player == 1;
@@ -82,301 +72,243 @@ class _PlayerHalfState extends State<PlayerHalf> {
       child: Card(
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        child: Stack(
-          children: [
-            // ------------------------------------------------------------
-            // ZOOM-BEREICH (nur Inhalt)
-            // ------------------------------------------------------------
-            InteractiveViewer(
-              transformationController: _zoom,
-              minScale: 0.7,
-              maxScale: 2.5,
-              boundaryMargin: const EdgeInsets.all(40),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                child: Column(
-                  children: [
-                    Text(
-                      '${widget.leftTeam} vs ${widget.rightTeam}',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade700,
-                      ),
-                    ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          child: Column(
+            children: [
+              Text(
+                '${widget.leftTeam} vs ${widget.rightTeam}',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade700,
+                ),
+              ),
 
-                    const SizedBox(height: 6),
+              const SizedBox(height: 6),
 
-                    Text(
-                      '$scoreLeft : $scoreRight',
-                      style: const TextStyle(
-                        fontSize: 38,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+              Text(
+                '$scoreLeft : $scoreRight',
+                style: const TextStyle(
+                  fontSize: 38,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
 
-                    const SizedBox(height: 8),
+              const SizedBox(height: 8),
 
-                    Card(
-                      color: Colors.blue.shade100,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
+              Card(
+                color: Colors.blue.shade100,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  child: Row(
+                    children: [
+                      Expanded(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    onPressed:
-                                        widget.canPrev ? widget.onPrevGame : null,
-                                    icon: const Icon(Icons.arrow_left),
-                                    visualDensity: VisualDensity.compact,
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      'Spiel ${widget.currentGame + 1} / ${widget.controller.gamesPerRound}',
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed:
-                                        widget.canNext ? widget.onNextGame : null,
-                                    icon: const Icon(Icons.arrow_right),
-                                    visualDensity: VisualDensity.compact,
-                                  ),
-                                ],
+                            IconButton(
+                              onPressed: widget.canPrev ? widget.onPrevGame : null,
+                              icon: const Icon(Icons.arrow_left),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            Flexible(
+                              child: Text(
+                                'Spiel ${widget.currentGame + 1} / ${widget.controller.gamesPerRound}',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-
-                            const SizedBox(width: 8),
-
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    onPressed:
-                                        widget.controller.hasPrevRound(widget.viewRound)
-                                            ? widget.onPrevRound
-                                            : null,
-                                    icon: const Icon(Icons.arrow_left),
-                                    visualDensity: VisualDensity.compact,
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      'Runde ${widget.controller.currentRound - widget.viewRound} / $maxRoundsText',
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed:
-                                        widget.controller.hasNextRound(widget.viewRound)
-                                            ? widget.onNextRound
-                                            : null,
-                                    icon: const Icon(Icons.arrow_right),
-                                    visualDensity: VisualDensity.compact,
-                                  ),
-                                ],
-                              ),
+                            IconButton(
+                              onPressed: widget.canNext ? widget.onNextGame : null,
+                              icon: const Icon(Icons.arrow_right),
+                              visualDensity: VisualDensity.compact,
                             ),
                           ],
                         ),
                       ),
-                    ),
 
-                    const SizedBox(height: 10),
+                      const SizedBox(width: 8),
 
-                    Container(
-                      height: 120,
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: tense
-                            ? Colors.red.shade100
-                            : Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: tense
-                              ? Colors.red.shade300
-                              : Colors.grey.shade300,
-                          width: 2,
-                        ),
-                      ),
-                      child: points.isEmpty
-                          ? Center(
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: widget.controller.hasPrevRound(widget.viewRound)
+                                  ? widget.onPrevRound
+                                  : null,
+                              icon: const Icon(Icons.arrow_left),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                            Flexible(
                               child: Text(
-                                'Noch keine Punkte',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: tense
-                                      ? Colors.red.shade700
-                                      : Colors.grey,
+                                'Runde ${widget.controller.currentRound - widget.viewRound} / $maxRoundsText',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            )
-                          : SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: points
-                                    .map(
-                                      (e) => Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 6),
-                                        child: Chip(
-                                          label: Text(
-                                            '$e',
-                                            style: const TextStyle(
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          padding:
-                                              const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 12,
-                                          ),
-                                          backgroundColor: tense
-                                              ? Colors.red.shade200
-                                              : Colors.blue.shade100,
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
                             ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 110,
-                            height: 60,
-                            child: ElevatedButton(
-                              onPressed: widget.onToggleTense,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: tense
-                                    ? Colors.red.shade600
-                                    : Colors.blue.shade700,
-                                foregroundColor: Colors.white,
-                              ),
-                              child: Text(
-                                tense ? 'Entspannt' : 'Gespann­t',
-                                style: const TextStyle(fontSize: 16),
-                              ),
+                            IconButton(
+                              onPressed: widget.controller.hasNextRound(widget.viewRound)
+                                  ? widget.onNextRound
+                                  : null,
+                              icon: const Icon(Icons.arrow_right),
+                              visualDensity: VisualDensity.compact,
                             ),
-                          ),
-
-                          const SizedBox(width: 8),
-
-                          SizedBox(
-                            width: 85,
-                            height: 60,
-                            child: ElevatedButton(
-                              onPressed: () => widget.onAddScore(2),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue.shade700,
-                                foregroundColor: Colors.white,
-                              ),
-                              child: const Text('2',
-                                  style: TextStyle(fontSize: 26)),
-                            ),
-                          ),
-
-                          const SizedBox(width: 8),
-
-                          SizedBox(
-                            width: 85,
-                            height: 60,
-                            child: ElevatedButton(
-                              onPressed: () => widget.onAddScore(3),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue.shade700,
-                                foregroundColor: Colors.white,
-                              ),
-                              child: const Text('3',
-                                  style: TextStyle(fontSize: 26)),
-                            ),
-                          ),
-
-                          const SizedBox(width: 8),
-
-                          SizedBox(
-                            width: 85,
-                            height: 60,
-                            child: ElevatedButton(
-                              onPressed: () => _openNumberPad(context),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue.shade700,
-                                foregroundColor: Colors.white,
-                              ),
-                              child: const Text('1–20',
-                                  style: TextStyle(fontSize: 20)),
-                            ),
-                          ),
-
-                          const SizedBox(width: 8),
-
-                          SizedBox(
-                            width: 130,
-                            height: 60,
-                            child: OutlinedButton(
-                              onPressed: widget.onUndo,
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(
-                                    color: Colors.blue.shade700, width: 2),
-                              ),
-                              child: const Text(
-                                'Rückgängig',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // ------------------------------------------------------------
-            // ZOOM BUTTONS
-            // ------------------------------------------------------------
-            Positioned(
-              right: 10,
-              bottom: 10,
-              child: Column(
-                children: [
-                  FloatingActionButton(
-                    mini: true,
-                    onPressed: _zoomIn,
-                    child: const Icon(Icons.add),
+              const SizedBox(height: 10),
+
+              Container(
+                height: 120,
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                decoration: BoxDecoration(
+                  color: tense ? Colors.red.shade100 : Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: tense ? Colors.red.shade300 : Colors.grey.shade300,
+                    width: 2,
                   ),
-                  const SizedBox(height: 8),
-                  FloatingActionButton(
-                    mini: true,
-                    onPressed: _zoomOut,
-                    child: const Icon(Icons.remove),
-                  ),
-                ],
+                ),
+                child: points.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Noch keine Punkte',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: tense ? Colors.red.shade700 : Colors.grey,
+                          ),
+                        ),
+                      )
+                    : SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: points
+                              .map(
+                                (e) => Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                                  child: Chip(
+                                    label: Text(
+                                      '$e',
+                                      style: const TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
+                                    backgroundColor: tense
+                                        ? Colors.red.shade200
+                                        : Colors.blue.shade100,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 10),
+
+              // ------------------------------------------------------------
+              // BUTTONZEILE MIT BUZZER
+              // ------------------------------------------------------------
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final size = constraints.maxWidth / 5;
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // BUZZER (rot)
+                      _smallButton(
+                        icon: Icons.radio_button_checked,
+                        iconColor: Colors.redAccent,
+                        onTap: widget.onToggleTense,
+                        size: size,
+                      ),
+
+                      _smallButton(
+                        text: "2",
+                        onTap: () => widget.onAddScore(2),
+                        size: size,
+                      ),
+
+                      _smallButton(
+                        text: "3",
+                        onTap: () => widget.onAddScore(3),
+                        size: size,
+                      ),
+
+                      _smallButton(
+                        icon: Icons.grid_view,
+                        onTap: () => _openNumberPad(context),
+                        size: size,
+                      ),
+
+                      _smallButton(
+                        icon: Icons.undo,
+                        onTap: widget.onUndo,
+                        size: size,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _smallButton({
+    String? text,
+    IconData? icon,
+    Color? iconColor,
+    required VoidCallback onTap,
+    required double size,
+  }) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.zero,
+          backgroundColor: Colors.blue.shade700,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: icon != null
+            ? Icon(
+                icon,
+                size: size * 0.45,
+                color: iconColor ?? Colors.white,
+              )
+            : Text(
+                text!,
+                style: TextStyle(
+                  fontSize: size * 0.35,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
       ),
     );
   }
@@ -395,8 +327,7 @@ class _PlayerHalfState extends State<PlayerHalf> {
             child: GridView.builder(
               shrinkWrap: true,
               itemCount: 20,
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
