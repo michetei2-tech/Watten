@@ -127,7 +127,7 @@ class _StartPageState extends State<StartPage> {
 
                 const SizedBox(height: 20),
 
-                // SPIEL LADEN (NEU)
+                // SPIEL LADEN
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -156,28 +156,34 @@ class _StartPageState extends State<StartPage> {
 
                 const SizedBox(height: 20),
 
-                // TURNIER
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Turniermodus folgt bald!'),
+                // TURNIER — UNSICHTBAR, ABER IM LAYOUT
+                Visibility(
+                  visible: false,
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Turniermodus folgt bald!'),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        backgroundColor: Colors.orange.shade700,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      backgroundColor: Colors.orange.shade700,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ),
-                    child: const Text(
-                      'Turnier',
-                      style: TextStyle(fontSize: 24),
+                      child: const Text(
+                        'Turnier',
+                        style: TextStyle(fontSize: 24),
+                      ),
                     ),
                   ),
                 ),
