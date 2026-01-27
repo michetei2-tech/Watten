@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-
 import '../logic/score_controller.dart';
 import '../models/game_state.dart';
 import '../widgets/app_background.dart';
 import '../widgets/save_game_dialog.dart';
 import 'start_page.dart';
+
+// PDF
+import 'package:printing/printing.dart';
+import '../pdf/auswertung_pdf.dart';
 
 class AuswertungPage extends StatelessWidget {
   final ScoreController controller;
@@ -45,6 +48,7 @@ class AuswertungPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -53,110 +57,60 @@ class AuswertungPage extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 20),
+
               Row(
                 children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade700,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text("Zurück", style: TextStyle(fontSize: 18)),
-                      ),
-                    ),
-                  ),
+                  _button("Zurück", Colors.blue.shade700, () {
+                    Navigator.pop(context);
+                  }),
+
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (_) => const StartPage()),
-                            (route) => false,
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child:
-                            const Text("Startseite", style: TextStyle(fontSize: 18)),
-                      ),
-                    ),
-                  ),
+
+                  _button("Startseite", Colors.red, () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const StartPage()),
+                      (route) => false,
+                    );
+                  }),
+
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (_) => SaveGameDialog(
-                              controller: controller,
-                              team1: team1,
-                              team2: team2,
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade700,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child:
-                            const Text("Speichern", style: TextStyle(fontSize: 18)),
+
+                  _button("Speichern", Colors.blue.shade700, () async {
+                    await showDialog(
+                      context: context,
+                      builder: (_) => SaveGameDialog(
+                        controller: controller,
+                        team1: team1,
+                        team2: team2,
                       ),
-                    ),
-                  ),
+                    );
+                  }),
+
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text("Download als PDF"),
-                              content: const Text(
-                                  "Der PDF-Download ist in der Zapp-Version nicht verfügbar.\n\n"
-                                  "Diese Funktion wird in der Web-Version der App umgesetzt."),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx),
-                                  child: const Text("OK"),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade700,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+
+                  // PDF BUTTON
+                  _button("Download", Colors.blue.shade700, () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PdfPreview(
+                          build: (format) => AuswertungPdf(
+                            controller: controller,
+                            team1: team1,
+                            team2: team2,
+                          ).build(format),
+                          allowPrinting: true,
+                          allowSharing: true,
+                          canChangeOrientation: true,
+                          canChangePageFormat: true,
+                          initialPageFormat: PdfPageFormat.a4.landscape,
                         ),
-                        child:
-                            const Text("Download", style: TextStyle(fontSize: 18)),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                 ],
               ),
             ],
@@ -166,6 +120,28 @@ class AuswertungPage extends StatelessWidget {
     );
   }
 
+  Widget _button(String text, Color color, VoidCallback onTap) {
+    return Expanded(
+      child: SizedBox(
+        height: 60,
+        child: ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: Text(text, style: const TextStyle(fontSize: 18)),
+        ),
+      ),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // UI TABELLE
+  // ------------------------------------------------------------
   Widget _buildTable(List<List<GameState>> rounds, int gamesPerRound) {
     int totalMe = 0;
     int totalOpp = 0;
@@ -268,10 +244,12 @@ class AuswertungPage extends StatelessWidget {
           children: [
             _cell("${r + 1}", center: true, bold: true),
             _cell(team1.isEmpty ? "Team 1" : team1, center: true, bold: true),
-            for (var g in round)
+            for (int i = 0; i < gamesPerRound; i++)
               _cellGame(
-                "${g.p1}",
-                highlight: controller.gschneidertDoppelt && g.p1 == 0,
+                i < round.length ? "${round[i].p1}" : "",
+                highlight: controller.gschneidertDoppelt &&
+                    i < round.length &&
+                    round[i].p1 == 0,
               ),
             _cell("$sumMe", center: true, bold: true),
             _cell("$pointsMe", center: true, bold: true),
@@ -286,10 +264,12 @@ class AuswertungPage extends StatelessWidget {
           children: [
             _cell("", center: true),
             _cell(team2.isEmpty ? "Team 2" : team2, center: true, bold: true),
-            for (var g in round)
+            for (int i = 0; i < gamesPerRound; i++)
               _cellGame(
-                "${g.p2}",
-                highlight: controller.gschneidertDoppelt && g.p2 == 0,
+                i < round.length ? "${round[i].p2}" : "",
+                highlight: controller.gschneidertDoppelt &&
+                    i < round.length &&
+                    round[i].p2 == 0,
               ),
             _cell("$sumOpp", center: true, bold: true),
             _cell("$pointsOpp", center: true, bold: true),
