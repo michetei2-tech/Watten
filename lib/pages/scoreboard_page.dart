@@ -141,117 +141,136 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                 },
               ),
             ),
+
             const SizedBox(height: 10),
+
+            // ------------------------------------------------------------
+            // RESPONSIVE BUTTON LEISTE (NEU)
+            // ------------------------------------------------------------
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: 130,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (_) => const StartPage()),
-                          (route) => false,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text('Startseite',
-                          style: TextStyle(fontSize: 18)),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 150,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () => setState(() {
-                        controller.newRound();
-                        viewRound = 0;
-                        controller.currentGame = 0;
-                      }),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child:
-                          const Text('Neue Runde', style: TextStyle(fontSize: 18)),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 130,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final selected = await _selectTable(context);
-                        setState(() => controller.table = selected);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade600,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        controller.table == null
-                            ? 'Tisch'
-                            : 'Tisch ${controller.table}',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 150,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () => setState(controller.nextGame),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child:
-                          const Text('Neues Spiel', style: TextStyle(fontSize: 18)),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 140,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => AuswertungPage(
-                              controller: controller,
-                              team1: widget.team1,
-                              team2: widget.team2,
-                            ),
+                  Expanded(
+                    child: SizedBox(
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => const StartPage()),
+                            (route) => false,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange.shade700,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const FittedBox(
+                          child: Text('Startseite', style: TextStyle(fontSize: 18)),
                         ),
                       ),
-                      child:
-                          const Text('Auswertung', style: TextStyle(fontSize: 18)),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: SizedBox(
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed: () => setState(() {
+                          controller.newRound();
+                          viewRound = 0;
+                          controller.currentGame = 0;
+                        }),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade700,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const FittedBox(
+                          child: Text('Neue Runde', style: TextStyle(fontSize: 18)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: SizedBox(
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final selected = await _selectTable(context);
+                          setState(() => controller.table = selected);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade600,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: FittedBox(
+                          child: Text(
+                            controller.table == null
+                                ? 'Tisch'
+                                : 'Tisch ${controller.table}',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: SizedBox(
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed: () => setState(controller.nextGame),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade700,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const FittedBox(
+                          child: Text('Neues Spiel', style: TextStyle(fontSize: 18)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: SizedBox(
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => AuswertungPage(
+                                controller: controller,
+                                team1: widget.team1,
+                                team2: widget.team2,
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange.shade700,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const FittedBox(
+                          child: Text('Auswertung', style: TextStyle(fontSize: 18)),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -308,3 +327,4 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
     );
   }
 }
+
