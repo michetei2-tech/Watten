@@ -67,6 +67,13 @@ class _PlayerHalfState extends State<PlayerHalf> {
         ? '∞'
         : widget.controller.totalRounds.toString();
 
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Dynamische Größen für Buttons & Chips
+    final buzzerSize = (screenHeight * 0.065).clamp(38.0, 70.0);
+    final chipFontSize = (screenHeight * 0.03).clamp(18.0, 26.0);
+    final scoreFontSize = (screenHeight * 0.05).clamp(26.0, 40.0);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
       child: Card(
@@ -75,11 +82,13 @@ class _PlayerHalfState extends State<PlayerHalf> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
+              // TEAM-NAMEN
               Text(
                 '${widget.leftTeam} vs ${widget.rightTeam}',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: (screenHeight * 0.03).clamp(16.0, 22.0),
                   fontWeight: FontWeight.bold,
                   color: Colors.blue.shade700,
                 ),
@@ -87,20 +96,23 @@ class _PlayerHalfState extends State<PlayerHalf> {
 
               const SizedBox(height: 6),
 
+              // SCORE
               Text(
                 '$scoreLeft : $scoreRight',
-                style: const TextStyle(
-                  fontSize: 38,
+                style: TextStyle(
+                  fontSize: scoreFontSize,
                   fontWeight: FontWeight.bold,
                 ),
               ),
 
               const SizedBox(height: 8),
 
+              // SPIEL / RUNDE
               Card(
                 color: Colors.blue.shade100,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                   child: Row(
                     children: [
                       Expanded(
@@ -108,7 +120,8 @@ class _PlayerHalfState extends State<PlayerHalf> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                              onPressed: widget.canPrev ? widget.onPrevGame : null,
+                              onPressed:
+                                  widget.canPrev ? widget.onPrevGame : null,
                               icon: const Icon(Icons.arrow_left),
                               visualDensity: VisualDensity.compact,
                             ),
@@ -116,14 +129,16 @@ class _PlayerHalfState extends State<PlayerHalf> {
                               child: Text(
                                 'Spiel ${widget.currentGame + 1} / ${widget.controller.gamesPerRound}',
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 18,
+                                style: TextStyle(
+                                  fontSize:
+                                      (screenHeight * 0.025).clamp(14.0, 20.0),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                             IconButton(
-                              onPressed: widget.canNext ? widget.onNextGame : null,
+                              onPressed:
+                                  widget.canNext ? widget.onNextGame : null,
                               icon: const Icon(Icons.arrow_right),
                               visualDensity: VisualDensity.compact,
                             ),
@@ -138,7 +153,8 @@ class _PlayerHalfState extends State<PlayerHalf> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                              onPressed: widget.controller.hasPrevRound(widget.viewRound)
+                              onPressed: widget.controller
+                                      .hasPrevRound(widget.viewRound)
                                   ? widget.onPrevRound
                                   : null,
                               icon: const Icon(Icons.arrow_left),
@@ -148,14 +164,16 @@ class _PlayerHalfState extends State<PlayerHalf> {
                               child: Text(
                                 'Runde ${widget.controller.currentRound - widget.viewRound} / $maxRoundsText',
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 18,
+                                style: TextStyle(
+                                  fontSize:
+                                      (screenHeight * 0.025).clamp(14.0, 20.0),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                             IconButton(
-                              onPressed: widget.controller.hasNextRound(widget.viewRound)
+                              onPressed: widget.controller
+                                      .hasNextRound(widget.viewRound)
                                   ? widget.onNextRound
                                   : null,
                               icon: const Icon(Icons.arrow_right),
@@ -171,9 +189,11 @@ class _PlayerHalfState extends State<PlayerHalf> {
 
               const SizedBox(height: 10),
 
+              // PUNKTE-ANZEIGE
               Container(
-                height: 120,
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                height: (screenHeight * 0.12).clamp(70.0, 130.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                 decoration: BoxDecoration(
                   color: tense ? Colors.red.shade100 : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(10),
@@ -187,7 +207,8 @@ class _PlayerHalfState extends State<PlayerHalf> {
                         child: Text(
                           'Noch keine Punkte',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize:
+                                (screenHeight * 0.025).clamp(14.0, 20.0),
                             color: tense ? Colors.red.shade700 : Colors.grey,
                           ),
                         ),
@@ -198,12 +219,13 @@ class _PlayerHalfState extends State<PlayerHalf> {
                           children: points
                               .map(
                                 (e) => Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6),
                                   child: Chip(
                                     label: Text(
                                       '$e',
-                                      style: const TextStyle(
-                                        fontSize: 28,
+                                      style: TextStyle(
+                                        fontSize: chipFontSize,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -224,50 +246,37 @@ class _PlayerHalfState extends State<PlayerHalf> {
 
               const SizedBox(height: 10),
 
-              // ------------------------------------------------------------
-              // BUTTONZEILE MIT BUZZER
-              // ------------------------------------------------------------
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final size = constraints.maxWidth / 5;
-
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // BUZZER (rot)
-                      _smallButton(
-                        icon: Icons.radio_button_checked,
-                        iconColor: Colors.redAccent,
-                        onTap: widget.onToggleTense,
-                        size: size,
-                      ),
-
-                      _smallButton(
-                        text: "2",
-                        onTap: () => widget.onAddScore(2),
-                        size: size,
-                      ),
-
-                      _smallButton(
-                        text: "3",
-                        onTap: () => widget.onAddScore(3),
-                        size: size,
-                      ),
-
-                      _smallButton(
-                        icon: Icons.grid_view,
-                        onTap: () => _openNumberPad(context),
-                        size: size,
-                      ),
-
-                      _smallButton(
-                        icon: Icons.undo,
-                        onTap: widget.onUndo,
-                        size: size,
-                      ),
-                    ],
-                  );
-                },
+              // BUZZER-LEISTE (immer sichtbar, immer eine Reihe)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buzzerButton(
+                    icon: Icons.radio_button_checked,
+                    iconColor: Colors.redAccent,
+                    onTap: widget.onToggleTense,
+                    size: buzzerSize,
+                  ),
+                  _buzzerButton(
+                    text: "2",
+                    onTap: () => widget.onAddScore(2),
+                    size: buzzerSize,
+                  ),
+                  _buzzerButton(
+                    text: "3",
+                    onTap: () => widget.onAddScore(3),
+                    size: buzzerSize,
+                  ),
+                  _buzzerButton(
+                    icon: Icons.grid_view,
+                    onTap: () => _openNumberPad(context),
+                    size: buzzerSize,
+                  ),
+                  _buzzerButton(
+                    icon: Icons.undo,
+                    onTap: widget.onUndo,
+                    size: buzzerSize,
+                  ),
+                ],
               ),
             ],
           ),
@@ -276,7 +285,7 @@ class _PlayerHalfState extends State<PlayerHalf> {
     );
   }
 
-  Widget _smallButton({
+  Widget _buzzerButton({
     String? text,
     IconData? icon,
     Color? iconColor,

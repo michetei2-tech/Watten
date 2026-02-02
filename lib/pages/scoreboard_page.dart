@@ -56,31 +56,85 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
     final games = controller.getRoundGames(viewRound);
     final game = games[controller.currentGame];
+
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Dynamische maximale Höhe pro Hälfte
+    final maxHalfHeight = screenHeight * 0.45;
 
     return Scaffold(
       body: AppBackground(
         child: Column(
           children: [
-            SizedBox(
-              height: h * 0.44,
-              child: RotatedBox(
-                quarterTurns: 2,
+            // OBERES SCOREBOARD
+            Flexible(
+              fit: FlexFit.loose,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: maxHalfHeight,
+                ),
+                child: RotatedBox(
+                  quarterTurns: 2,
+                  child: PlayerHalf(
+                    player: 2,
+                    game: game,
+                    leftTeam: widget.team2,
+                    rightTeam: widget.team1,
+                    table: controller.table,
+                    controller: controller,
+                    onUndo: () => setState(controller.undo),
+                    onToggleTense: () => setState(() => controller.toggleTense(2)),
+                    onPrevGame: () => setState(controller.prevGame),
+                    onNextGame: () => setState(controller.nextGame),
+                    onPickTable: (v) => setState(() => controller.table = v),
+                    onAddScore: (v) => setState(() => controller.addScore(2, v)),
+                    canNext: controller.canNext,
+                    canPrev: controller.canPrev,
+                    currentGame: controller.currentGame,
+                    viewRound: viewRound,
+                    onPrevRound: () {
+                      if (controller.hasPrevRound(viewRound)) {
+                        setState(() {
+                          viewRound++;
+                          controller.currentGame = 0;
+                        });
+                      }
+                    },
+                    onNextRound: () {
+                      if (controller.hasNextRound(viewRound)) {
+                        setState(() {
+                          viewRound--;
+                          controller.currentGame = 0;
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+
+            // UNTERES SCOREBOARD
+            Flexible(
+              fit: FlexFit.loose,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: maxHalfHeight,
+                ),
                 child: PlayerHalf(
-                  player: 2,
+                  player: 1,
                   game: game,
-                  leftTeam: widget.team2,
-                  rightTeam: widget.team1,
+                  leftTeam: widget.team1,
+                  rightTeam: widget.team2,
                   table: controller.table,
                   controller: controller,
                   onUndo: () => setState(controller.undo),
-                  onToggleTense: () => setState(() => controller.toggleTense(2)),
+                  onToggleTense: () => setState(() => controller.toggleTense(1)),
                   onPrevGame: () => setState(controller.prevGame),
                   onNextGame: () => setState(controller.nextGame),
                   onPickTable: (v) => setState(() => controller.table = v),
-                  onAddScore: (v) => setState(() => controller.addScore(2, v)),
+                  onAddScore: (v) => setState(() => controller.addScore(1, v)),
                   canNext: controller.canNext,
                   canPrev: controller.canPrev,
                   currentGame: controller.currentGame,
@@ -104,152 +158,75 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                 ),
               ),
             ),
-            SizedBox(
-              height: h * 0.44,
-              child: PlayerHalf(
-                player: 1,
-                game: game,
-                leftTeam: widget.team1,
-                rightTeam: widget.team2,
-                table: controller.table,
-                controller: controller,
-                onUndo: () => setState(controller.undo),
-                onToggleTense: () => setState(() => controller.toggleTense(1)),
-                onPrevGame: () => setState(controller.prevGame),
-                onNextGame: () => setState(controller.nextGame),
-                onPickTable: (v) => setState(() => controller.table = v),
-                onAddScore: (v) => setState(() => controller.addScore(1, v)),
-                canNext: controller.canNext,
-                canPrev: controller.canPrev,
-                currentGame: controller.currentGame,
-                viewRound: viewRound,
-                onPrevRound: () {
-                  if (controller.hasPrevRound(viewRound)) {
-                    setState(() {
-                      viewRound++;
-                      controller.currentGame = 0;
-                    });
-                  }
-                },
-                onNextRound: () {
-                  if (controller.hasNextRound(viewRound)) {
-                    setState(() {
-                      viewRound--;
-                      controller.currentGame = 0;
-                    });
-                  }
-                },
-              ),
-            ),
 
             const SizedBox(height: 10),
 
-            // ------------------------------------------------------------
-            // RESPONSIVE BUTTON LEISTE (NEU)
-            // ------------------------------------------------------------
+            // BUTTON-LEISTE (bleibt wie vorher)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () {
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth > 700;
+                  final buttonHeight =
+                      (screenHeight * 0.07).clamp(40.0, 55.0);
+                  final halfWidth = constraints.maxWidth / 2 - 12;
+
+                  return Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      _actionButton(
+                        text: "Startseite",
+                        color: Colors.red,
+                        height: buttonHeight,
+                        width: isWide ? 140 : halfWidth,
+                        onTap: () {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (_) => const StartPage()),
                             (route) => false,
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const FittedBox(
-                          child: Text('Startseite', style: TextStyle(fontSize: 18)),
-                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () => setState(() {
-                          controller.newRound();
-                          viewRound = 0;
-                          controller.currentGame = 0;
-                        }),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade700,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const FittedBox(
-                          child: Text('Neue Runde', style: TextStyle(fontSize: 18)),
-                        ),
+                      _actionButton(
+                        text: "Neue Runde",
+                        color: Colors.blue.shade700,
+                        height: buttonHeight,
+                        width: isWide ? 140 : halfWidth,
+                        onTap: () {
+                          setState(() {
+                            controller.newRound();
+                            viewRound = 0;
+                            controller.currentGame = 0;
+                          });
+                        },
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () async {
+                      _actionButton(
+                        text: controller.table == null
+                            ? "Tisch"
+                            : "Tisch ${controller.table}",
+                        color: Colors.blue.shade600,
+                        height: buttonHeight,
+                        width: isWide ? 140 : halfWidth,
+                        onTap: () async {
                           final selected = await _selectTable(context);
                           setState(() => controller.table = selected);
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade600,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: FittedBox(
-                          child: Text(
-                            controller.table == null
-                                ? 'Tisch'
-                                : 'Tisch ${controller.table}',
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () => setState(controller.nextGame),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade700,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const FittedBox(
-                          child: Text('Neues Spiel', style: TextStyle(fontSize: 18)),
-                        ),
+                      _actionButton(
+                        text: "Neues Spiel",
+                        color: Colors.blue.shade700,
+                        height: buttonHeight,
+                        width: isWide ? 140 : halfWidth,
+                        onTap: () => setState(controller.nextGame),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () async {
+                      _actionButton(
+                        text: "Auswertung",
+                        color: Colors.orange.shade700,
+                        height: buttonHeight,
+                        width: isWide ? 140 : halfWidth,
+                        onTap: () async {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => AuswertungPage(
@@ -260,23 +237,42 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                             ),
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange.shade700,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const FittedBox(
-                          child: Text('Auswertung', style: TextStyle(fontSize: 18)),
-                        ),
                       ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _actionButton({
+    required String text,
+    required Color color,
+    required double height,
+    required double width,
+    required VoidCallback onTap,
+  }) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: FittedBox(
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 18),
+          ),
         ),
       ),
     );
@@ -327,4 +323,3 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
     );
   }
 }
-
