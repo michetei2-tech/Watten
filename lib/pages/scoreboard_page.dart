@@ -61,20 +61,18 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
 
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Dynamische maximale Höhe pro Hälfte
+    // Jede Hälfte darf maximal 45% der Höhe einnehmen
     final maxHalfHeight = screenHeight * 0.45;
 
     return Scaffold(
       body: AppBackground(
         child: Column(
           children: [
-            // OBERES SCOREBOARD
+            // OBERES SCOREBOARD (gespiegelt)
             Flexible(
               fit: FlexFit.loose,
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: maxHalfHeight,
-                ),
+                constraints: BoxConstraints(maxHeight: maxHalfHeight),
                 child: RotatedBox(
                   quarterTurns: 2,
                   child: PlayerHalf(
@@ -119,9 +117,7 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
             Flexible(
               fit: FlexFit.loose,
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: maxHalfHeight,
-                ),
+                constraints: BoxConstraints(maxHeight: maxHalfHeight),
                 child: PlayerHalf(
                   player: 1,
                   game: game,
@@ -161,7 +157,7 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
 
             const SizedBox(height: 10),
 
-            // BUTTON-LEISTE (bleibt wie vorher)
+            // BUTTON-LEISTE (nur Tisch + Auswertung)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: LayoutBuilder(
@@ -177,55 +173,22 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                     alignment: WrapAlignment.center,
                     children: [
                       _actionButton(
-                        text: "Startseite",
-                        color: Colors.red,
-                        height: buttonHeight,
-                        width: isWide ? 140 : halfWidth,
-                        onTap: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (_) => const StartPage()),
-                            (route) => false,
-                          );
-                        },
-                      ),
-                      _actionButton(
-                        text: "Neue Runde",
-                        color: Colors.blue.shade700,
-                        height: buttonHeight,
-                        width: isWide ? 140 : halfWidth,
-                        onTap: () {
-                          setState(() {
-                            controller.newRound();
-                            viewRound = 0;
-                            controller.currentGame = 0;
-                          });
-                        },
-                      ),
-                      _actionButton(
                         text: controller.table == null
                             ? "Tisch"
                             : "Tisch ${controller.table}",
                         color: Colors.blue.shade600,
                         height: buttonHeight,
-                        width: isWide ? 140 : halfWidth,
+                        width: isWide ? 160 : halfWidth,
                         onTap: () async {
                           final selected = await _selectTable(context);
                           setState(() => controller.table = selected);
                         },
                       ),
                       _actionButton(
-                        text: "Neues Spiel",
-                        color: Colors.blue.shade700,
-                        height: buttonHeight,
-                        width: isWide ? 140 : halfWidth,
-                        onTap: () => setState(controller.nextGame),
-                      ),
-                      _actionButton(
                         text: "Auswertung",
                         color: Colors.orange.shade700,
                         height: buttonHeight,
-                        width: isWide ? 140 : halfWidth,
+                        width: isWide ? 160 : halfWidth,
                         onTap: () async {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
