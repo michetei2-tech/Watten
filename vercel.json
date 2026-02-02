@@ -1,5 +1,0 @@
-{
-  "installCommand": "mkdir -p flutter-sdk && curl -o flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.13.9-stable.tar.xz && tar -xf flutter.tar.xz -C flutter-sdk --strip-components=1",
-  "buildCommand": "export PATH=\"$PATH:$(pwd)/flutter-sdk/bin\" && flutter --version && flutter build web",
-  "outputDirectory": "build/web"
-}
