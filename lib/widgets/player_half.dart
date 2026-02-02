@@ -28,6 +28,8 @@ class PlayerHalf extends StatefulWidget {
   final VoidCallback onPrevRound;
   final VoidCallback onNextRound;
 
+  final VoidCallback onAuswertung;
+
   const PlayerHalf({
     super.key,
     required this.player,
@@ -48,6 +50,7 @@ class PlayerHalf extends StatefulWidget {
     required this.viewRound,
     required this.onPrevRound,
     required this.onNextRound,
+    required this.onAuswertung,
   });
 
   @override
@@ -69,7 +72,7 @@ class _PlayerHalfState extends State<PlayerHalf> {
 
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final arrowSize = 48.0; // OPTION C
+    final arrowSize = 48.0;
     final scoreFontSize = (screenHeight * 0.05).clamp(26.0, 40.0);
     final chipFontSize = (screenHeight * 0.03).clamp(18.0, 26.0);
     final buzzerSize = (screenHeight * 0.065).clamp(38.0, 70.0);
@@ -79,102 +82,260 @@ class _PlayerHalfState extends State<PlayerHalf> {
       child: Card(
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // TEAM-NAMEN
-              Text(
-                '${widget.leftTeam} vs ${widget.rightTeam}',
-                style: TextStyle(
-                  fontSize: (screenHeight * 0.03).clamp(16.0, 22.0),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade700,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
                 ),
-              ),
-
-              const SizedBox(height: 6),
-
-              // SCORE
-              Text(
-                '$scoreLeft : $scoreRight',
-                style: TextStyle(
-                  fontSize: scoreFontSize,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              // SPIEL + RUNDE NAVIGATION
-              Card(
-                color: Colors.blue.shade100,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // SPIEL
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            iconSize: arrowSize,
-                            onPressed: widget.canPrev ? widget.onPrevGame : null,
-                            icon: const Icon(Icons.arrow_left),
-                          ),
-                          Expanded(
-                            child: Text(
-                              'Spiel ${widget.currentGame + 1} / ${widget.controller.gamesPerRound}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: (screenHeight * 0.025).clamp(14.0, 20.0),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            iconSize: arrowSize,
-                            onPressed: () {
-                              // NEUES SPIEL
-                              widget.onNextGame();
-                            },
-                            icon: const Icon(Icons.arrow_right),
-                          ),
-                        ],
+                      // TEAM-NAMEN
+                      Text(
+                        '${widget.leftTeam} vs ${widget.rightTeam}',
+                        style: TextStyle(
+                          fontSize: (screenHeight * 0.03).clamp(16.0, 22.0),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade700,
+                        ),
                       ),
 
                       const SizedBox(height: 6),
 
-                      // RUNDE
+                      // SCORE + TISCH + AUSWERTUNG
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
-                            iconSize: arrowSize,
-                            onPressed: widget.controller.hasPrevRound(widget.viewRound)
-                                ? widget.onPrevRound
-                                : null,
-                            icon: const Icon(Icons.arrow_left),
-                          ),
-                          Expanded(
-                            child: Text(
-                              'Runde ${widget.controller.currentRound - widget.viewRound} / $maxRoundsText',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: (screenHeight * 0.025).clamp(14.0, 20.0),
-                                fontWeight: FontWeight.bold,
+                          SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                final selected = await _selectTable(context);
+                                widget.onPickTable(selected);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue.shade600,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                "Tisch",
+                                style: TextStyle(fontSize: 16),
                               ),
                             ),
                           ),
-                          IconButton(
-                            iconSize: arrowSize,
-                            onPressed: () {
-                              // NEUE RUNDE
-                              widget.controller.newRound();
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.arrow_right),
+                          Text(
+                            '$scoreLeft : $scoreRight',
+                            style: TextStyle(
+                              fontSize: scoreFontSize,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                              onPressed: widget.onAuswertung,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange.shade700,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                "Auswertung",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // SPIEL + RUNDE NAVIGATION
+                      Card(
+                        color: Colors.blue.shade100,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
+                          ),
+                          child: Column(
+                            children: [
+                              // SPIEL
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    iconSize: arrowSize,
+                                    onPressed:
+                                        widget.canPrev ? widget.onPrevGame : null,
+                                    icon: const Icon(Icons.arrow_left),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Spiel ${widget.currentGame + 1} / ${widget.controller.gamesPerRound}',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: (screenHeight * 0.025)
+                                            .clamp(14.0, 20.0),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    iconSize: arrowSize,
+                                    onPressed: widget.onNextGame,
+                                    icon: const Icon(Icons.arrow_right),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 6),
+
+                              // RUNDE
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    iconSize: arrowSize,
+                                    onPressed: widget.controller
+                                            .hasPrevRound(widget.viewRound)
+                                        ? widget.onPrevRound
+                                        : null,
+                                    icon: const Icon(Icons.arrow_left),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'Runde ${widget.controller.currentRound - widget.viewRound} / $maxRoundsText',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: (screenHeight * 0.025)
+                                            .clamp(14.0, 20.0),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    iconSize: arrowSize,
+                                    onPressed: () {
+                                      widget.controller.newRound();
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.arrow_right),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // PUNKTE-ANZEIGE
+                      Container(
+                        height: (screenHeight * 0.12).clamp(70.0, 130.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: tense
+                              ? Colors.red.shade100
+                              : Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: tense
+                                ? Colors.red.shade300
+                                : Colors.grey.shade300,
+                            width: 2,
+                          ),
+                        ),
+                        child: points.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'Noch keine Punkte',
+                                  style: TextStyle(
+                                    fontSize: (screenHeight * 0.025)
+                                        .clamp(14.0, 20.0),
+                                    color: tense
+                                        ? Colors.red.shade700
+                                        : Colors.grey,
+                                  ),
+                                ),
+                              )
+                            : SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: points
+                                      .map(
+                                        (e) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                          ),
+                                          child: Chip(
+                                            label: Text(
+                                              '$e',
+                                              style: TextStyle(
+                                                fontSize: chipFontSize,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 12,
+                                            ),
+                                            backgroundColor: tense
+                                                ? Colors.red.shade200
+                                                : Colors.blue.shade100,
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // BUZZER-LEISTE
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buzzerButton(
+                            icon: Icons.radio_button_checked,
+                            iconColor: Colors.redAccent,
+                            onTap: widget.onToggleTense,
+                            size: buzzerSize,
+                          ),
+                          _buzzerButton(
+                            text: "2",
+                            onTap: () => widget.onAddScore(2),
+                            size: buzzerSize,
+                          ),
+                          _buzzerButton(
+                            text: "3",
+                            onTap: () => widget.onAddScore(3),
+                            size: buzzerSize,
+                          ),
+                          _buzzerButton(
+                            icon: Icons.grid_view,
+                            onTap: () => _openNumberPad(context),
+                            size: buzzerSize,
+                          ),
+                          _buzzerButton(
+                            icon: Icons.undo,
+                            onTap: widget.onUndo,
+                            size: buzzerSize,
                           ),
                         ],
                       ),
@@ -182,97 +343,8 @@ class _PlayerHalfState extends State<PlayerHalf> {
                   ),
                 ),
               ),
-
-              const SizedBox(height: 10),
-
-              // PUNKTE-ANZEIGE
-              Container(
-                height: (screenHeight * 0.12).clamp(70.0, 130.0),
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                decoration: BoxDecoration(
-                  color: tense ? Colors.red.shade100 : Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: tense ? Colors.red.shade300 : Colors.grey.shade300,
-                    width: 2,
-                  ),
-                ),
-                child: points.isEmpty
-                    ? Center(
-                        child: Text(
-                          'Noch keine Punkte',
-                          style: TextStyle(
-                            fontSize: (screenHeight * 0.025).clamp(14.0, 20.0),
-                            color: tense ? Colors.red.shade700 : Colors.grey,
-                          ),
-                        ),
-                      )
-                    : SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: points
-                              .map(
-                                (e) => Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                                  child: Chip(
-                                    label: Text(
-                                      '$e',
-                                      style: TextStyle(
-                                        fontSize: chipFontSize,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 12,
-                                    ),
-                                    backgroundColor: tense
-                                        ? Colors.red.shade200
-                                        : Colors.blue.shade100,
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // BUZZER-LEISTE
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buzzerButton(
-                    icon: Icons.radio_button_checked,
-                    iconColor: Colors.redAccent,
-                    onTap: widget.onToggleTense,
-                    size: buzzerSize,
-                  ),
-                  _buzzerButton(
-                    text: "2",
-                    onTap: () => widget.onAddScore(2),
-                    size: buzzerSize,
-                  ),
-                  _buzzerButton(
-                    text: "3",
-                    onTap: () => widget.onAddScore(3),
-                    size: buzzerSize,
-                  ),
-                  _buzzerButton(
-                    icon: Icons.grid_view,
-                    onTap: () => _openNumberPad(context),
-                    size: buzzerSize,
-                  ),
-                  _buzzerButton(
-                    icon: Icons.undo,
-                    onTap: widget.onUndo,
-                    size: buzzerSize,
-                  ),
-                ],
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -315,6 +387,52 @@ class _PlayerHalfState extends State<PlayerHalf> {
     );
   }
 
+  Future<int?> _selectTable(BuildContext context) async {
+    return showDialog<int>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text("Tisch auswählen"),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 250,
+            child: GridView.builder(
+              gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: 20,
+              itemBuilder: (_, index) {
+                final number = index + 1;
+                return GestureDetector(
+                  onTap: () => Navigator.pop(ctx, number),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade700,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "$number",
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _openNumberPad(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -329,7 +447,8 @@ class _PlayerHalfState extends State<PlayerHalf> {
             child: GridView.builder(
               shrinkWrap: true,
               itemCount: 20,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,

@@ -4,7 +4,6 @@ import '../logic/score_controller.dart';
 import '../widgets/player_half.dart';
 import '../widgets/app_background.dart';
 import 'auswertung_page.dart';
-import 'start_page.dart';
 
 class ScoreboardPage extends StatefulWidget {
   final bool isTournament;
@@ -54,14 +53,25 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
     }
   }
 
+  Future<void> _openAuswertung() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AuswertungPage(
+          controller: controller,
+          team1: widget.team1,
+          team2: widget.team2,
+        ),
+      ),
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final games = controller.getRoundGames(viewRound);
     final game = games[controller.currentGame];
 
     final screenHeight = MediaQuery.of(context).size.height;
-
-    // Jede Hälfte darf maximal 45% der Höhe einnehmen
     final maxHalfHeight = screenHeight * 0.45;
 
     return Scaffold(
@@ -83,11 +93,14 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                     table: controller.table,
                     controller: controller,
                     onUndo: () => setState(controller.undo),
-                    onToggleTense: () => setState(() => controller.toggleTense(2)),
+                    onToggleTense: () =>
+                        setState(() => controller.toggleTense(2)),
                     onPrevGame: () => setState(controller.prevGame),
                     onNextGame: () => setState(controller.nextGame),
-                    onPickTable: (v) => setState(() => controller.table = v),
-                    onAddScore: (v) => setState(() => controller.addScore(2, v)),
+                    onPickTable: (v) =>
+                        setState(() => controller.table = v),
+                    onAddScore: (v) =>
+                        setState(() => controller.addScore(2, v)),
                     canNext: controller.canNext,
                     canPrev: controller.canPrev,
                     currentGame: controller.currentGame,
@@ -108,6 +121,7 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                         });
                       }
                     },
+                    onAuswertung: _openAuswertung,
                   ),
                 ),
               ),
@@ -126,11 +140,14 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                   table: controller.table,
                   controller: controller,
                   onUndo: () => setState(controller.undo),
-                  onToggleTense: () => setState(() => controller.toggleTense(1)),
+                  onToggleTense: () =>
+                      setState(() => controller.toggleTense(1)),
                   onPrevGame: () => setState(controller.prevGame),
                   onNextGame: () => setState(controller.nextGame),
-                  onPickTable: (v) => setState(() => controller.table = v),
-                  onAddScore: (v) => setState(() => controller.addScore(1, v)),
+                  onPickTable: (v) =>
+                      setState(() => controller.table = v),
+                  onAddScore: (v) =>
+                      setState(() => controller.addScore(1, v)),
                   canNext: controller.canNext,
                   canPrev: controller.canPrev,
                   currentGame: controller.currentGame,
@@ -151,138 +168,13 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                       });
                     }
                   },
+                  onAuswertung: _openAuswertung,
                 ),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            // BUTTON-LEISTE (nur Tisch + Auswertung)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth > 700;
-                  final buttonHeight =
-                      (screenHeight * 0.07).clamp(40.0, 55.0);
-                  final halfWidth = constraints.maxWidth / 2 - 12;
-
-                  return Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      _actionButton(
-                        text: controller.table == null
-                            ? "Tisch"
-                            : "Tisch ${controller.table}",
-                        color: Colors.blue.shade600,
-                        height: buttonHeight,
-                        width: isWide ? 160 : halfWidth,
-                        onTap: () async {
-                          final selected = await _selectTable(context);
-                          setState(() => controller.table = selected);
-                        },
-                      ),
-                      _actionButton(
-                        text: "Auswertung",
-                        color: Colors.orange.shade700,
-                        height: buttonHeight,
-                        width: isWide ? 160 : halfWidth,
-                        onTap: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => AuswertungPage(
-                                controller: controller,
-                                team1: widget.team1,
-                                team2: widget.team2,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _actionButton({
-    required String text,
-    required Color color,
-    required double height,
-    required double width,
-    required VoidCallback onTap,
-  }) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: ElevatedButton(
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: FittedBox(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 18),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<int?> _selectTable(BuildContext context) async {
-    return showDialog<int>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text("Tisch auswählen"),
-          content: SizedBox(
-            width: double.maxFinite,
-            height: 250,
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: 20,
-              itemBuilder: (_, index) {
-                final number = index + 1;
-                return GestureDetector(
-                  onTap: () => Navigator.pop(ctx, number),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade700,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "$number",
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        );
-      },
     );
   }
 }
