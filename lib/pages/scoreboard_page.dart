@@ -71,83 +71,30 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
     final games = controller.getRoundGames(viewRound);
     final game = games[controller.currentGame];
 
-    final screenHeight = MediaQuery.of(context).size.height;
-    final maxHalfHeight = screenHeight * 0.45;
-
     return Scaffold(
       body: AppBackground(
         child: Column(
           children: [
-            // OBERES SCOREBOARD (gespiegelt)
-            Flexible(
-              fit: FlexFit.loose,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: maxHalfHeight),
-                child: RotatedBox(
-                  quarterTurns: 2,
-                  child: PlayerHalf(
-                    player: 2,
-                    game: game,
-                    leftTeam: widget.team2,
-                    rightTeam: widget.team1,
-                    table: controller.table,
-                    controller: controller,
-                    onUndo: () => setState(controller.undo),
-                    onToggleTense: () =>
-                        setState(() => controller.toggleTense(2)),
-                    onPrevGame: () => setState(controller.prevGame),
-                    onNextGame: () => setState(controller.nextGame),
-                    onPickTable: (v) =>
-                        setState(() => controller.table = v),
-                    onAddScore: (v) =>
-                        setState(() => controller.addScore(2, v)),
-                    canNext: controller.canNext,
-                    canPrev: controller.canPrev,
-                    currentGame: controller.currentGame,
-                    viewRound: viewRound,
-                    onPrevRound: () {
-                      if (controller.hasPrevRound(viewRound)) {
-                        setState(() {
-                          viewRound++;
-                          controller.currentGame = 0;
-                        });
-                      }
-                    },
-                    onNextRound: () {
-                      if (controller.hasNextRound(viewRound)) {
-                        setState(() {
-                          viewRound--;
-                          controller.currentGame = 0;
-                        });
-                      }
-                    },
-                    onAuswertung: _openAuswertung,
-                  ),
-                ),
-              ),
-            ),
-
-            // UNTERES SCOREBOARD
-            Flexible(
-              fit: FlexFit.loose,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: maxHalfHeight),
+            // obere Hälfte (gespiegelt)
+            Expanded(
+              child: RotatedBox(
+                quarterTurns: 2,
                 child: PlayerHalf(
-                  player: 1,
+                  player: 2,
                   game: game,
-                  leftTeam: widget.team1,
-                  rightTeam: widget.team2,
+                  leftTeam: widget.team2,
+                  rightTeam: widget.team1,
                   table: controller.table,
                   controller: controller,
                   onUndo: () => setState(controller.undo),
                   onToggleTense: () =>
-                      setState(() => controller.toggleTense(1)),
+                      setState(() => controller.toggleTense(2)),
                   onPrevGame: () => setState(controller.prevGame),
                   onNextGame: () => setState(controller.nextGame),
                   onPickTable: (v) =>
                       setState(() => controller.table = v),
                   onAddScore: (v) =>
-                      setState(() => controller.addScore(1, v)),
+                      setState(() => controller.addScore(2, v)),
                   canNext: controller.canNext,
                   canPrev: controller.canPrev,
                   currentGame: controller.currentGame,
@@ -161,15 +108,56 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
                     }
                   },
                   onNextRound: () {
-                    if (controller.hasNextRound(viewRound)) {
-                      setState(() {
-                        viewRound--;
-                        controller.currentGame = 0;
-                      });
-                    }
+                    // Neue Runde wird NUR hier erzeugt
+                    setState(() {
+                      controller.newRound();
+                      viewRound = 0;          // aktuelle Runde anzeigen
+                      controller.currentGame = 0; // erstes Spiel
+                    });
                   },
                   onAuswertung: _openAuswertung,
                 ),
+              ),
+            ),
+
+            // untere Hälfte
+            Expanded(
+              child: PlayerHalf(
+                player: 1,
+                game: game,
+                leftTeam: widget.team1,
+                rightTeam: widget.team2,
+                table: controller.table,
+                controller: controller,
+                onUndo: () => setState(controller.undo),
+                onToggleTense: () =>
+                    setState(() => controller.toggleTense(1)),
+                onPrevGame: () => setState(controller.prevGame),
+                onNextGame: () => setState(controller.nextGame),
+                onPickTable: (v) =>
+                    setState(() => controller.table = v),
+                onAddScore: (v) =>
+                    setState(() => controller.addScore(1, v)),
+                canNext: controller.canNext,
+                canPrev: controller.canPrev,
+                currentGame: controller.currentGame,
+                viewRound: viewRound,
+                onPrevRound: () {
+                  if (controller.hasPrevRound(viewRound)) {
+                    setState(() {
+                      viewRound++;
+                      controller.currentGame = 0;
+                    });
+                  }
+                },
+                onNextRound: () {
+                  setState(() {
+                    controller.newRound();
+                    viewRound = 0;
+                    controller.currentGame = 0;
+                  });
+                },
+                onAuswertung: _openAuswertung,
               ),
             ),
           ],
