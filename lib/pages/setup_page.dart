@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/app_background.dart';
 import 'scoreboard_page.dart';
 import 'start_page.dart';
-import 'zwei_geraete_setup_page.dart';
 import 'setup/einstellungen_page.dart';
+import 'zwei_geraete/zwei_geraete_setup_page.dart';
 
 class SetupPage extends StatefulWidget {
   const SetupPage({super.key});
@@ -40,24 +40,17 @@ class _SetupPageState extends State<SetupPage> {
                     color: Colors.blue.shade800,
                   ),
                 ),
-
                 const SizedBox(height: 30),
-
                 _buildInputField(
                   controller: team1Controller,
                   label: 'Team 1 (optional)',
                 ),
-
                 const SizedBox(height: 16),
-
                 _buildInputField(
                   controller: team2Controller,
                   label: 'Team 2 (optional)',
                 ),
-
                 const SizedBox(height: 40),
-
-                // EINSTELLUNGSBUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -76,10 +69,7 @@ class _SetupPageState extends State<SetupPage> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 40),
-
-                // START BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -98,10 +88,7 @@ class _SetupPageState extends State<SetupPage> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
-                // STARTSEITE BUTTON
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -134,9 +121,6 @@ class _SetupPageState extends State<SetupPage> {
     );
   }
 
-  // ------------------------------------------------------------
-  // EINSTELLUNGEN ÖFFNEN
-  // ------------------------------------------------------------
   Future<void> _openSettings() async {
     final result = await Navigator.push(
       context,
@@ -162,9 +146,6 @@ class _SetupPageState extends State<SetupPage> {
     }
   }
 
-  // ------------------------------------------------------------
-  // UI-Bausteine
-  // ------------------------------------------------------------
   Widget _buildInputField({
     required TextEditingController controller,
     required String label,
@@ -182,9 +163,6 @@ class _SetupPageState extends State<SetupPage> {
     );
   }
 
-  // ------------------------------------------------------------
-  // SPIEL STARTEN
-  // ------------------------------------------------------------
   void _startGame() {
     final t1 = team1Controller.text.trim();
     final t2 = team2Controller.text.trim();
@@ -206,7 +184,14 @@ class _SetupPageState extends State<SetupPage> {
     } else {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => const ZweiGeraeteSetupPage(),
+          builder: (_) => ZweiGeraeteSetupPage(
+            team1: t1,
+            team2: t2,
+            maxPoints: maxPoints,
+            totalRounds: totalRounds,
+            gamesPerRound: gamesPerRound,
+            gschneidertDoppelt: gschneidertDoppelt,
+          ),
         ),
       );
     }

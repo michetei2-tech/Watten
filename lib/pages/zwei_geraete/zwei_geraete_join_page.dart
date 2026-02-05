@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../widgets/app_background.dart';
 import 'zwei_geraete_waiting_page.dart';
@@ -16,11 +15,12 @@ class _ZweiGeraeteJoinPageState extends State<ZweiGeraeteJoinPage> {
   final TextEditingController codeController = TextEditingController();
   bool loading = false;
   String? errorMessage;
+  bool navigated = false;
 
-  // ------------------------------------------------------------
-  // SESSION PRÜFEN
-  // ------------------------------------------------------------
   Future<void> _joinSession(String sessionId) async {
+    if (navigated) return;
+    navigated = true;
+
     setState(() {
       loading = true;
       errorMessage = null;
@@ -33,31 +33,36 @@ class _ZweiGeraeteJoinPageState extends State<ZweiGeraeteJoinPage> {
       setState(() {
         loading = false;
         errorMessage = "Session nicht gefunden.";
+        navigated = false;
       });
       return;
     }
 
-    final data = snapshot.value as Map;
+    final data = Map<String, dynamic>.from(snapshot.value as Map);
 
     if (data["status"] != "waiting") {
       setState(() {
         loading = false;
         errorMessage = "Session ist nicht mehr verfügbar.";
+        navigated = false;
       });
       return;
     }
 
-    // Spieler als verbunden markieren
+    final team1 = (data["team1"] as String).isEmpty ? "Team 1" : data["team1"];
+    final team2 = (data["team2"] as String).isEmpty ? "Team 2" : data["team2"];
+
     await ref.update({"playerConnected": true});
 
-    // Weiter zur Waiting Page
-    Navigator.push(
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) => ZweiGeraeteWaitingPage(
           sessionId: sessionId,
-          team1: data["team1"],
-          team2: data["team2"],
+          team1: team1,
+          team2: team2,
           maxPoints: data["maxPoints"],
           totalRounds: data["totalRounds"],
           gamesPerRound: data["gamesPerRound"],
@@ -68,27 +73,6 @@ class _ZweiGeraeteJoinPageState extends State<ZweiGeraeteJoinPage> {
     );
   }
 
-  // ------------------------------------------------------------
-  // QR SCANNER
-  // ------------------------------------------------------------
-  Future<void> _scanQrCode() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => QRScannerPage(
-          onScan: (code) {
-            Navigator.pop(context);
-            codeController.text = code;
-            _joinSession(code);
-          },
-        ),
-      ),
-    );
-  }
-
-  // ------------------------------------------------------------
-  // UI
-  // ------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,19 +90,15 @@ class _ZweiGeraeteJoinPageState extends State<ZweiGeraeteJoinPage> {
                   color: Colors.blue.shade900,
                 ),
               ),
-
               const SizedBox(height: 30),
-
               Text(
-                "Gib den Zahlencode ein oder scanne den QR‑Code.",
+                "Gib den Zahlencode ein.",
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.blue.shade800,
                 ),
               ),
-
               const SizedBox(height: 30),
-
               TextField(
                 controller: codeController,
                 keyboardType: TextInputType.number,
@@ -132,7 +112,6 @@ class _ZweiGeraeteJoinPageState extends State<ZweiGeraeteJoinPage> {
                   ),
                 ),
               ),
-
               if (errorMessage != null) ...[
                 const SizedBox(height: 10),
                 Text(
@@ -140,9 +119,7 @@ class _ZweiGeraeteJoinPageState extends State<ZweiGeraeteJoinPage> {
                   style: const TextStyle(color: Colors.red, fontSize: 18),
                 ),
               ],
-
               const SizedBox(height: 20),
-
               SizedBox(
                 width: double.infinity,
                 height: 60,
@@ -162,81 +139,9 @@ class _ZweiGeraeteJoinPageState extends State<ZweiGeraeteJoinPage> {
                       : const Text("Beitreten", style: TextStyle(fontSize: 22)),
                 ),
               ),
-
-              const SizedBox(height: 20),
-
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: loading ? null : _scanQrCode,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade700,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text("QR‑Code scannen", style: TextStyle(fontSize: 22)),
-                ),
-              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// ------------------------------------------------------------
-// QR SCANNER PAGE
-// ------------------------------------------------------------
-class QRScannerPage extends StatefulWidget {
-  final void Function(String code) onScan;
-
-  const QRScannerPage({super.key, required this.onScan});
-
-  @override
-  State<QRScannerPage> createState() => _QRScannerPageState();
-}
-
-class _QRScannerPageState extends State<QRScannerPage> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
-  QRViewController? controller;
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          QRView(
-            key: qrKey,
-            onQRViewCreated: (ctrl) {
-              controller = ctrl;
-              ctrl.scannedDataStream.listen((scanData) {
-                widget.onScan(scanData.code ?? "");
-              });
-            },
-          ),
-          Positioned(
-            top: 40,
-            left: 20,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black54,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text("Zurück"),
-            ),
-          ),
-        ],
       ),
     );
   }

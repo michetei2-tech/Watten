@@ -62,7 +62,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Immer den GameState verwenden, der vom Parent übergeben wird
     final isP1 = widget.player == 1;
     final scoreLeft = isP1 ? widget.game.p1 : widget.game.p2;
     final scoreRight = isP1 ? widget.game.p2 : widget.game.p1;
@@ -75,29 +74,27 @@ class _PlayerHalfState extends State<PlayerHalf> {
     final arrowSize = 48.0;
 
     final isCurrentRound = widget.viewRound == 0;
+
+    // echtes aktuelles Spiel im Controller
+    final realGame = widget.controller.game;
+
+    final realGameFinished =
+        realGame.p1 >= widget.controller.maxPoints ||
+        realGame.p2 >= widget.controller.maxPoints;
+
     final roundGames = widget.controller.getRoundGames(widget.viewRound);
 
-    // Spiel beendet?
-    final gameFinished =
-        scoreLeft >= widget.controller.maxPoints ||
-        scoreRight >= widget.controller.maxPoints;
+    final roundFinished = roundGames.every(
+      (g) =>
+          g.p1 >= widget.controller.maxPoints ||
+          g.p2 >= widget.controller.maxPoints,
+    );
 
-    // Runde beendet? (ALLE Spiele beendet) – nur für aktuelle Runde relevant
-    final roundFinished = isCurrentRound &&
-        roundGames.every(
-          (g) =>
-              g.p1 >= widget.controller.maxPoints ||
-              g.p2 >= widget.controller.maxPoints,
-        );
+    final canPrevRound =
+        widget.controller.allRounds.isNotEmpty &&
+        widget.viewRound < widget.controller.allRounds.length;
 
-    // Pfeil rechts nur, wenn nächstes Spiel existiert UND gespielt wurde (in der angezeigten Runde)
-    final canGoNextGame =
-        widget.currentGame < roundGames.length - 1 &&
-        (roundGames[widget.currentGame + 1].p1 > 0 ||
-         roundGames[widget.currentGame + 1].p2 > 0);
-
-    // Pfeil rechts für Runde nur, wenn nächste Runde existiert
-    final canGoNextRound = widget.controller.hasNextRound(widget.viewRound);
+    final canNextRound = widget.viewRound > 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
@@ -115,7 +112,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
                       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                       child: Column(
                         children: [
-                          // TEAM-ZEILE
                           Text(
                             '${widget.leftTeam} vs ${widget.rightTeam}',
                             style: TextStyle(
@@ -127,7 +123,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
 
                           const SizedBox(height: 4),
 
-                          // SCORE + TISCH + WERTUNG
                           Row(
                             children: [
                               SizedBox(
@@ -145,9 +140,12 @@ class _PlayerHalfState extends State<PlayerHalf> {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  child: const FittedBox(
+                                  child: FittedBox(
                                     fit: BoxFit.scaleDown,
-                                    child: Text("Tisch", style: TextStyle(fontSize: 16)),
+                                    child: Text(
+                                      widget.table?.toString() ?? "Tisch",
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -187,7 +185,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
 
                           const SizedBox(height: 4),
 
-                          // BLAUE BOX (Spiel/Runde Navigation)
                           Flexible(
                             flex: 2,
                             child: Card(
@@ -218,12 +215,7 @@ class _PlayerHalfState extends State<PlayerHalf> {
                                         ),
                                         IconButton(
                                           iconSize: arrowSize,
-                                          onPressed: canGoNextGame
-                                              ? () {
-                                                  widget.onNextGame();
-                                                  setState(() {});
-                                                }
-                                              : null,
+                                          onPressed: widget.canNext ? widget.onNextGame : null,
                                           icon: const Icon(Icons.arrow_right),
                                         ),
                                       ],
@@ -236,9 +228,7 @@ class _PlayerHalfState extends State<PlayerHalf> {
                                       children: [
                                         IconButton(
                                           iconSize: arrowSize,
-                                          onPressed: widget.controller.hasPrevRound(widget.viewRound)
-                                              ? widget.onPrevRound
-                                              : null,
+                                          onPressed: canPrevRound ? widget.onPrevRound : null,
                                           icon: const Icon(Icons.arrow_left),
                                         ),
                                         Expanded(
@@ -253,12 +243,7 @@ class _PlayerHalfState extends State<PlayerHalf> {
                                         ),
                                         IconButton(
                                           iconSize: arrowSize,
-                                          onPressed: canGoNextRound
-                                              ? () {
-                                                  widget.onNextRound();
-                                                  setState(() {});
-                                                }
-                                              : null,
+                                          onPressed: canNextRound ? widget.onNextRound : null,
                                           icon: const Icon(Icons.arrow_right),
                                         ),
                                       ],
@@ -271,7 +256,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
 
                           const SizedBox(height: 4),
 
-                          // PUNKTE-BOX
                           Flexible(
                             flex: 3,
                             child: Container(
@@ -325,9 +309,9 @@ class _PlayerHalfState extends State<PlayerHalf> {
                                     ),
                             ),
                           ),
+
                           const SizedBox(height: 4),
 
-                          // BUZZER
                           Flexible(
                             flex: 2,
                             child: Align(
@@ -371,17 +355,17 @@ class _PlayerHalfState extends State<PlayerHalf> {
                   ),
                 ),
 
-                // NÄCHSTES SPIEL BUTTON – nur in aktueller Runde
-                if (isCurrentRound && gameFinished && !roundFinished)
+                // NÄCHSTES SPIEL BUTTON – nur im echten aktuellen Spiel der aktuellen Runde
+                if (isCurrentRound &&
+                    widget.currentGame == widget.controller.currentGame &&
+                    realGameFinished &&
+                    !roundFinished)
                   Positioned(
                     top: 10,
                     left: 20,
                     right: 20,
                     child: ElevatedButton(
-                      onPressed: () {
-                        widget.onNextGame();
-                        setState(() {});
-                      },
+                      onPressed: widget.onNextGame,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green.shade600,
                         foregroundColor: Colors.white,
@@ -405,11 +389,7 @@ class _PlayerHalfState extends State<PlayerHalf> {
                     left: 20,
                     right: 20,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Nur Parent macht newRound – hier nur Callback
-                        widget.onNextRound();
-                        setState(() {});
-                      },
+                      onPressed: widget.onNextRound,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green.shade600,
                         foregroundColor: Colors.white,
@@ -433,9 +413,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
     );
   }
 
-  // ------------------------------------------------------------
-  // BUZZER BUTTON
-  // ------------------------------------------------------------
   Widget _buzzerButton({
     String? text,
     IconData? icon,
@@ -476,9 +453,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
     );
   }
 
-  // ------------------------------------------------------------
-  // TISCH AUSWAHL
-  // ------------------------------------------------------------
   Future<int?> _selectTable(BuildContext context) async {
     return showDialog<int>(
       context: context,
@@ -524,9 +498,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
     );
   }
 
-  // ------------------------------------------------------------
-  // NUMPAD
-  // ------------------------------------------------------------
   void _openNumberPad(BuildContext context) {
     showModalBottomSheet(
       context: context,

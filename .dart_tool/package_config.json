@@ -8,10 +8,28 @@
       "languageVersion": "3.2"
     },
     {
+      "name": "archive",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/archive-4.0.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "async",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/async-2.10.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
+    },
+    {
+      "name": "barcode",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/barcode-2.2.9",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "bidi",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/bidi-2.0.13",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "boolean_selector",
@@ -21,7 +39,7 @@
     },
     {
       "name": "characters",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/characters-1.4.1",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/characters-1.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -34,6 +52,12 @@
     {
       "name": "collection",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/collection-1.19.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "crypto",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/crypto-3.0.7",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -101,7 +125,7 @@
       "name": "flutter",
       "rootUri": "file:///workspaces/Watten/flutter/packages/flutter",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.8"
     },
     {
       "name": "flutter_lints",
@@ -113,13 +137,31 @@
       "name": "flutter_test",
       "rootUri": "file:///workspaces/Watten/flutter/packages/flutter_test",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.8"
     },
     {
       "name": "flutter_web_plugins",
       "rootUri": "file:///workspaces/Watten/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "http",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/http-1.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "http_parser",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/http_parser-4.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "image",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/image-4.5.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "leak_tracker",
@@ -147,19 +189,19 @@
     },
     {
       "name": "matcher",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/matcher-0.12.18",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/matcher-0.12.17",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.4"
     },
     {
       "name": "material_color_utilities",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/material_color_utilities-0.13.0",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/material_color_utilities-0.11.1",
       "packageUri": "lib/",
-      "languageVersion": "3.5"
+      "languageVersion": "2.17"
     },
     {
       "name": "meta",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/meta-1.18.0",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/meta-1.17.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -168,6 +210,12 @@
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/path-1.9.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "path_parsing",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/path_parsing-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "path_provider_linux",
@@ -188,6 +236,24 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "pdf",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/pdf-3.11.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "pdf_widget_wrapper",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/pdf_widget_wrapper-1.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "petitparser",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/petitparser-7.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
       "name": "platform",
       "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/platform-3.1.3",
       "packageUri": "lib/",
@@ -200,16 +266,28 @@
       "languageVersion": "2.19"
     },
     {
-      "name": "qr",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/qr-2.1.0",
+      "name": "posix",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/posix-6.0.3",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "printing",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/printing-5.14.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "qr",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/qr-3.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
     },
     {
       "name": "qr_flutter",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/qr_flutter-4.0.0",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/qr_flutter-4.1.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.19"
     },
     {
       "name": "shared_preferences",
@@ -257,7 +335,7 @@
       "name": "sky_engine",
       "rootUri": "file:///workspaces/Watten/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
-      "languageVersion": "3.9"
+      "languageVersion": "3.8"
     },
     {
       "name": "source_span",
@@ -291,9 +369,15 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/test_api-0.7.9",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/test_api-0.7.7",
       "packageUri": "lib/",
-      "languageVersion": "3.7"
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "typed_data",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/typed_data-1.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
     },
     {
       "name": "vector_math",
@@ -326,15 +410,21 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "xml",
+      "rootUri": "file:///home/codespace/.pub-cache/hosted/pub.dev/xml-6.6.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
       "name": "flutter_app",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     }
   ],
   "generator": "pub",
-  "generatorVersion": "3.12.0-68.0.dev",
+  "generatorVersion": "3.10.8",
   "flutterRoot": "file:///workspaces/Watten/flutter",
-  "flutterVersion": "3.41.0-1.0.pre-265",
+  "flutterVersion": "3.38.9",
   "pubCache": "file:///home/codespace/.pub-cache"
 }

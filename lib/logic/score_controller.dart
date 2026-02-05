@@ -42,11 +42,10 @@ class ScoreController {
     return lastRoundReached && lastGameReached && lastGameFinished;
   }
 
-  bool get isFinished =>
-      game.p1 >= maxPoints || game.p2 >= maxPoints;
+  bool get isFinished => game.p1 >= maxPoints || game.p2 >= maxPoints;
 
   // ------------------------------------------------------------
-  // SCORE ADD (mit Über-Maximalpunkte-Fix + Gschneidert doppelt)
+  // SCORE ADD
   // ------------------------------------------------------------
   void addScore(int player, int points) {
     if (isFinished) return;
@@ -55,7 +54,6 @@ class ScoreController {
       final before = game.p1;
       game.p1 += points;
 
-      // Überziehen → Deckeln
       if (game.p1 > maxPoints) {
         final applied = maxPoints - before;
         game.p1 = maxPoints;
@@ -65,9 +63,7 @@ class ScoreController {
           game.history.add(applied);
         }
 
-        // Gschneidert prüfen auch bei Deckelung
         _applyGschneidertDoppelt();
-
         _autoSave();
         return;
       }
@@ -78,7 +74,6 @@ class ScoreController {
       final before = game.p2;
       game.p2 += points;
 
-      // Überziehen → Deckeln
       if (game.p2 > maxPoints) {
         final applied = maxPoints - before;
         game.p2 = maxPoints;
@@ -88,9 +83,7 @@ class ScoreController {
           game.history.add(-applied);
         }
 
-        // Gschneidert prüfen auch bei Deckelung
         _applyGschneidertDoppelt();
-
         _autoSave();
         return;
       }
@@ -99,7 +92,6 @@ class ScoreController {
       game.history.add(-points);
     }
 
-    // Wenn Spiel fertig → Gschneidert doppelt anwenden
     if (isFinished) {
       _applyGschneidertDoppelt();
       game.p1Tense = false;
@@ -110,7 +102,7 @@ class ScoreController {
   }
 
   // ------------------------------------------------------------
-  // GSCHNEIDERT DOPPELT LOGIK (Fix: funktioniert auch bei Deckelung)
+  // GSCHNEIDERT DOPPELT
   // ------------------------------------------------------------
   void _applyGschneidertDoppelt() {
     if (!gschneidertDoppelt) return;
@@ -118,15 +110,8 @@ class ScoreController {
     final p1 = game.p1;
     final p2 = game.p2;
 
-    // Team 1 gewinnt gschneidert
-    if (p1 == maxPoints && p2 == 0) {
-      game.gschneidertWinner = 1;
-    }
-
-    // Team 2 gewinnt gschneidert
-    if (p2 == maxPoints && p1 == 0) {
-      game.gschneidertWinner = 2;
-    }
+    if (p1 == maxPoints && p2 == 0) game.gschneidertWinner = 1;
+    if (p2 == maxPoints && p1 == 0) game.gschneidertWinner = 2;
   }
 
   // ------------------------------------------------------------
@@ -145,7 +130,6 @@ class ScoreController {
       if (game.p2Points.isNotEmpty) game.p2Points.removeLast();
     }
 
-    // Falls Gschneidert doppelt markiert war → zurücksetzen
     game.gschneidertWinner = 0;
 
     _autoSave();
@@ -203,7 +187,7 @@ class ScoreController {
   }
 
   // ------------------------------------------------------------
-  // JSON SERIALISIERUNG
+  // JSON EXPORT
   // ------------------------------------------------------------
   Map<String, dynamic> toJson() {
     return {
@@ -223,6 +207,9 @@ class ScoreController {
     };
   }
 
+  // ------------------------------------------------------------
+  // JSON IMPORT (STATIC)
+  // ------------------------------------------------------------
   static ScoreController fromJson(Map<String, dynamic> json) {
     final c = ScoreController(
       maxPoints: json["maxPoints"],
@@ -250,6 +237,32 @@ class ScoreController {
   }
 
   // ------------------------------------------------------------
+  // JSON IMPORT (INSTANCE) — für Zwei-Geräte-Modus
+  // ------------------------------------------------------------
+  void loadFromJson(Map<String, dynamic> json) {
+    team1 = json["team1"] ?? team1;
+    team2 = json["team2"] ?? team2;
+
+    currentRound = json["currentRound"] ?? currentRound;
+    currentGame = json["currentGame"] ?? currentGame;
+    table = json["table"];
+
+    if (json.containsKey("games")) {
+      games = (json["games"] as List)
+          .map((g) => GameState.fromJson(Map<String, dynamic>.from(g)))
+          .toList();
+    }
+
+    if (json.containsKey("allRounds")) {
+      allRounds = (json["allRounds"] as List)
+          .map((round) => (round as List)
+              .map((g) => GameState.fromJson(Map<String, dynamic>.from(g)))
+              .toList())
+          .toList();
+    }
+  }
+
+  // ------------------------------------------------------------
   // SPEICHERN / LADEN
   // ------------------------------------------------------------
   Future<void> saveLastGame() async {
@@ -270,7 +283,7 @@ class ScoreController {
   }
 
   // ------------------------------------------------------------
-  // AUTOMATISCHES SPEICHERN
+  // AUTO-SAVE
   // ------------------------------------------------------------
   void _autoSave() {
     if (isGameFinished) {

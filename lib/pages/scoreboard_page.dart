@@ -33,11 +33,27 @@ class ScoreboardPage extends StatefulWidget {
 
 class _ScoreboardPageState extends State<ScoreboardPage> {
   late final ScoreController controller;
+
+  /// viewRound = 0 → aktuelle Runde
+  /// viewRound > 0 → History
   int viewRound = 0;
+
+  /// Anzeigeindex des Spiels
+  int viewGame = 0;
+
+  bool get isCurrentRound => viewRound == 0;
+
+  late final String effectiveTeam1;
+  late final String effectiveTeam2;
 
   @override
   void initState() {
     super.initState();
+
+    // Automatische Teamnamen
+    effectiveTeam1 = widget.team1.isEmpty ? "Team 1" : widget.team1;
+    effectiveTeam2 = widget.team2.isEmpty ? "Team 2" : widget.team2;
+
     if (widget.loadedController != null) {
       controller = widget.loadedController!;
     } else {
@@ -46,11 +62,13 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
         totalRounds: widget.totalRounds,
         gamesPerRound: widget.gamesPerRound,
         gschneidertDoppelt: widget.gschneidertDoppelt,
-        team1: widget.team1,
-        team2: widget.team2,
+        team1: effectiveTeam1,
+        team2: effectiveTeam2,
       );
       controller.saveLastGame();
     }
+
+    viewGame = controller.currentGame;
   }
 
   Future<void> _openAuswertung() async {
@@ -58,105 +76,167 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
       MaterialPageRoute(
         builder: (_) => AuswertungPage(
           controller: controller,
-          team1: widget.team1,
-          team2: widget.team2,
+          team1: effectiveTeam1,
+          team2: effectiveTeam2,
         ),
       ),
     );
     setState(() {});
   }
 
+  // ---------- SPIEL-NAVIGATION ----------
+
+  bool get _canPrevGame => viewGame > 0;
+
+  bool get _canNextGame {
+    final games = controller.getRoundGames(viewRound);
+    if (viewGame >= games.length - 1) return false;
+
+    final next = games[viewGame + 1];
+    return next.p1 > 0 || next.p2 > 0;
+  }
+
+  void _handlePrevGame() {
+    if (_canPrevGame) {
+      setState(() => viewGame--);
+    }
+  }
+
+  void _handleNextGame() {
+    // History
+    if (_canNextGame) {
+      setState(() => viewGame++);
+      return;
+    }
+
+    // Aktuelle Runde → echtes nextGame()
+    if (isCurrentRound && controller.canNext) {
+      setState(() {
+        controller.nextGame();
+        viewGame = controller.currentGame;
+      });
+    }
+  }
+
+  // ---------- RUNDEN-NAVIGATION ----------
+
+  bool get _hasHistory => controller.allRounds.isNotEmpty;
+
+  bool get _canPrevRound => viewRound < controller.allRounds.length;
+
+  bool get _canNextRound => viewRound > 0;
+
+  void _handlePrevRound() {
+    if (!_hasHistory) return;
+
+    setState(() {
+      if (viewRound == 0) {
+        viewRound = 1;
+      } else if (viewRound < controller.allRounds.length) {
+        viewRound++;
+      }
+      viewGame = 0;
+    });
+  }
+
+  void _handleNextRound() {
+    if (viewRound == 0) {
+      setState(() {
+        controller.newRound();
+        viewRound = 0;
+        viewGame = 0;
+      });
+      return;
+    }
+
+    if (_canNextRound) {
+      setState(() {
+        viewRound--;
+        viewGame = 0;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final games = controller.getRoundGames(viewRound);
-    final game = games[controller.currentGame];
+    final game = games[viewGame];
 
     return Scaffold(
       body: AppBackground(
         child: Column(
           children: [
-            // obere Hälfte (gespiegelt)
             Expanded(
               child: RotatedBox(
                 quarterTurns: 2,
                 child: PlayerHalf(
                   player: 2,
                   game: game,
-                  leftTeam: widget.team2,
-                  rightTeam: widget.team1,
+                  leftTeam: effectiveTeam2,
+                  rightTeam: effectiveTeam1,
                   table: controller.table,
                   controller: controller,
                   onUndo: () => setState(controller.undo),
                   onToggleTense: () =>
                       setState(() => controller.toggleTense(2)),
-                  onPrevGame: () => setState(controller.prevGame),
-                  onNextGame: () => setState(controller.nextGame),
+
+                  onPrevGame: _handlePrevGame,
+                  onNextGame: _handleNextGame,
+
                   onPickTable: (v) =>
                       setState(() => controller.table = v),
-                  onAddScore: (v) =>
-                      setState(() => controller.addScore(2, v)),
-                  canNext: controller.canNext,
-                  canPrev: controller.canPrev,
-                  currentGame: controller.currentGame,
-                  viewRound: viewRound,
-                  onPrevRound: () {
-                    if (controller.hasPrevRound(viewRound)) {
-                      setState(() {
-                        viewRound++;
-                        controller.currentGame = 0;
-                      });
+                  onAddScore: (v) {
+                    if (isCurrentRound) {
+                      setState(() => controller.addScore(2, v));
+                      viewGame = controller.currentGame;
                     }
                   },
-                  onNextRound: () {
-                    // Neue Runde wird NUR hier erzeugt
-                    setState(() {
-                      controller.newRound();
-                      viewRound = 0;          // aktuelle Runde anzeigen
-                      controller.currentGame = 0; // erstes Spiel
-                    });
-                  },
+
+                  canNext: _canNextGame,
+                  canPrev: _canPrevGame,
+                  currentGame: viewGame,
+                  viewRound: viewRound,
+
+                  onPrevRound: _handlePrevRound,
+                  onNextRound: _handleNextRound,
+
                   onAuswertung: _openAuswertung,
                 ),
               ),
             ),
 
-            // untere Hälfte
             Expanded(
               child: PlayerHalf(
                 player: 1,
                 game: game,
-                leftTeam: widget.team1,
-                rightTeam: widget.team2,
+                leftTeam: effectiveTeam1,
+                rightTeam: effectiveTeam2,
                 table: controller.table,
                 controller: controller,
                 onUndo: () => setState(controller.undo),
                 onToggleTense: () =>
                     setState(() => controller.toggleTense(1)),
-                onPrevGame: () => setState(controller.prevGame),
-                onNextGame: () => setState(controller.nextGame),
+
+                onPrevGame: _handlePrevGame,
+                onNextGame: _handleNextGame,
+
                 onPickTable: (v) =>
                     setState(() => controller.table = v),
-                onAddScore: (v) =>
-                    setState(() => controller.addScore(1, v)),
-                canNext: controller.canNext,
-                canPrev: controller.canPrev,
-                currentGame: controller.currentGame,
-                viewRound: viewRound,
-                onPrevRound: () {
-                  if (controller.hasPrevRound(viewRound)) {
-                    setState(() {
-                      viewRound++;
-                      controller.currentGame = 0;
-                    });
+                onAddScore: (v) {
+                  if (isCurrentRound) {
+                    setState(() => controller.addScore(1, v));
+                    viewGame = controller.currentGame;
                   }
                 },
-                onNextRound: () {
-                  setState(() {
-                    controller.newRound();
-                    viewRound = 0;
-                    controller.currentGame = 0;
-                  });
-                },
+
+                canNext: _canNextGame,
+                canPrev: _canPrevGame,
+                currentGame: viewGame,
+                viewRound: viewRound,
+
+                onPrevRound: _handlePrevRound,
+                onNextRound: _handleNextRound,
+
                 onAuswertung: _openAuswertung,
               ),
             ),

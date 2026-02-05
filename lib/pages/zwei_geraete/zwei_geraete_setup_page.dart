@@ -31,22 +31,33 @@ class ZweiGeraeteSetupPage extends StatefulWidget {
 class _ZweiGeraeteSetupPageState extends State<ZweiGeraeteSetupPage> {
   late String sessionId;
   late DatabaseReference sessionRef;
+  bool created = false;
+
+  late final String effectiveTeam1;
+  late final String effectiveTeam2;
 
   @override
   void initState() {
     super.initState();
+
+    // Automatische Teamnamen
+    effectiveTeam1 = widget.team1.isEmpty ? "Team 1" : widget.team1;
+    effectiveTeam2 = widget.team2.isEmpty ? "Team 2" : widget.team2;
+
     _createSession();
   }
 
   void _createSession() {
-    sessionId = _generateCode(6);
+    if (created) return;
+    created = true;
 
+    sessionId = _generateCode(6);
     sessionRef = FirebaseDatabase.instance.ref("sessions/$sessionId");
 
     sessionRef.set({
       "status": "waiting",
-      "team1": widget.team1,
-      "team2": widget.team2,
+      "team1": effectiveTeam1,
+      "team2": effectiveTeam2,
       "maxPoints": widget.maxPoints,
       "totalRounds": widget.totalRounds,
       "gamesPerRound": widget.gamesPerRound,
@@ -60,6 +71,13 @@ class _ZweiGeraeteSetupPageState extends State<ZweiGeraeteSetupPage> {
     final rand = Random();
     const chars = "0123456789";
     return List.generate(length, (_) => chars[rand.nextInt(chars.length)]).join();
+  }
+
+  @override
+  void dispose() {
+    // Koordinator verlässt NUR die Setup-Seite → Session bleibt bestehen
+    sessionRef.update({"coordinatorConnected": false});
+    super.dispose();
   }
 
   @override
@@ -129,8 +147,8 @@ class _ZweiGeraeteSetupPageState extends State<ZweiGeraeteSetupPage> {
                       MaterialPageRoute(
                         builder: (_) => ZweiGeraeteWaitingPage(
                           sessionId: sessionId,
-                          team1: widget.team1,
-                          team2: widget.team2,
+                          team1: effectiveTeam1,
+                          team2: effectiveTeam2,
                           maxPoints: widget.maxPoints,
                           totalRounds: widget.totalRounds,
                           gamesPerRound: widget.gamesPerRound,

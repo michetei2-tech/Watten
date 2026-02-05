@@ -4,7 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import '../../logic/score_controller.dart';
 import '../../widgets/app_background.dart';
 import '../../widgets/player_half.dart';
-import 'zwei_geraete_connection_lost_page.dart';
+import '../scoreboard_page.dart';
 
 class ZweiGeraeteGamePage extends StatefulWidget {
   final String sessionId;
@@ -33,8 +33,10 @@ class ZweiGeraeteGamePage extends StatefulWidget {
 }
 
 class _ZweiGeraeteGamePageState extends State<ZweiGeraeteGamePage> {
-  late ScoreController controller;
   late DatabaseReference sessionRef;
+  late ScoreController controller;
+
+  bool navigated = false;
 
   @override
   void initState() {
@@ -52,94 +54,176 @@ class _ZweiGeraeteGamePageState extends State<ZweiGeraeteGamePage> {
     sessionRef = FirebaseDatabase.instance.ref("sessions/${widget.sessionId}");
 
     _listenToSession();
-    _listenToGameState();
   }
 
+  // ------------------------------------------------------------
+  // SESSION LISTENER
+  // ------------------------------------------------------------
   void _listenToSession() {
     sessionRef.onValue.listen((event) {
-      if (!mounted) return;
+      if (!mounted || navigated) return;
 
       if (!event.snapshot.exists) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const ZweiGeraeteConnectionLostPage(
-              reason: "Die Session wurde beendet.",
-            ),
-          ),
-        );
+        _fallbackToSingleDevice("Die Session wurde beendet.");
         return;
       }
 
       final map = Map<String, dynamic>.from(event.snapshot.value as Map);
 
-      if (map["status"] == "closed") {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const ZweiGeraeteConnectionLostPage(
-              reason: "Der Koordinator hat das Spiel beendet.",
-            ),
-          ),
-        );
+      final coordinatorConnected = map["coordinatorConnected"] ?? false;
+      final playerConnected = map["playerConnected"] ?? false;
+
+      // Koordinator weg → Spieler übernimmt
+      if (!widget.isCoordinator && !coordinatorConnected) {
+        _fallbackToSingleDevice("Der Koordinator hat die Verbindung verloren.");
         return;
       }
 
-      if (!widget.isCoordinator && map["coordinatorConnected"] == false) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const ZweiGeraeteConnectionLostPage(
-              reason: "Der Koordinator ist nicht mehr verbunden.",
-            ),
-          ),
-        );
+      // Spieler weg → Koordinator übernimmt
+      if (widget.isCoordinator && !playerConnected) {
+        _fallbackToSingleDevice("Der Mitspieler hat die Verbindung verloren.");
         return;
+      }
+
+      // ScoreController synchronisieren
+      if (map.containsKey("controller")) {
+        controller.loadFromJson(
+          Map<String, dynamic>.from(map["controller"]),
+        );
+        if (mounted) setState(() {});
       }
     });
   }
 
-  void _listenToGameState() {
-    sessionRef.child("gameState").onValue.listen((event) {
-      if (!mounted) return;
-      if (event.snapshot.value == null) return;
+  // ------------------------------------------------------------
+  // Fallback in Ein-Geräte-Modus
+  // ------------------------------------------------------------
+  void _fallbackToSingleDevice(String reason) async {
+    if (navigated) return;
+    navigated = true;
 
-      final data = Map<String, dynamic>.from(event.snapshot.value as Map);
+    await sessionRef.remove();
 
-      setState(() {
-        controller = ScoreController.fromJson(data);
-      });
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ScoreboardPage(
+          isTournament: false,
+          team1: widget.team1,
+          team2: widget.team2,
+          totalRounds: widget.totalRounds,
+          maxPoints: widget.maxPoints,
+          gamesPerRound: widget.gamesPerRound,
+          gschneidertDoppelt: widget.gschneidertDoppelt,
+          loadedController: controller,
+        ),
+      ),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // Sync
+  // ------------------------------------------------------------
+  Future<void> _sync() async {
+    await sessionRef.update({
+      "controller": controller.toJson(),
     });
   }
 
-  void _sync() {
-    sessionRef.child("gameState").set(controller.toJson());
+  // ------------------------------------------------------------
+  // Dispose → Session NICHT löschen!
+  // ------------------------------------------------------------
+  @override
+  void dispose() {
+    if (!widget.isCoordinator) {
+      sessionRef.update({"playerConnected": false});
+    }
+    super.dispose();
   }
 
+  // ------------------------------------------------------------
+  // UI
+  // ------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
-    final game = controller.game;
-
-    final bool isTeam1 = widget.isCoordinator;
-    final int myPlayer = isTeam1 ? 1 : 2;
+    final games = controller.getRoundGames(0);
+    final game = games[controller.currentGame];
 
     return Scaffold(
       body: AppBackground(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            Text(
-              isTeam1 ? widget.team1 : widget.team2,
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue.shade900,
+            Expanded(
+              child: RotatedBox(
+                quarterTurns: 2,
+                child: PlayerHalf(
+                  player: 2,
+                  game: game,
+                  leftTeam: widget.team2,
+                  rightTeam: widget.team1,
+                  table: controller.table,
+                  controller: controller,
+                  onUndo: () {
+                    controller.undo();
+                    setState(() {});
+                    _sync();
+                  },
+                  onToggleTense: () {
+                    controller.toggleTense(2);
+                    setState(() {});
+                    _sync();
+                  },
+                  onPrevGame: () {
+                    controller.prevGame();
+                    setState(() {});
+                    _sync();
+                  },
+                  onNextGame: () {
+                    controller.nextGame();
+                    setState(() {});
+                    _sync();
+                  },
+                  onPickTable: (v) {
+                    controller.table = v;
+                    setState(() {});
+                    _sync();
+                  },
+                  onAddScore: (v) {
+                    controller.addScore(2, v);
+                    setState(() {});
+                    _sync();
+                  },
+                  canNext: controller.canNext,
+                  canPrev: controller.canPrev,
+                  currentGame: controller.currentGame,
+                  viewRound: 0,
+                  onPrevRound: () {},
+                  onNextRound: () {},
+                  onAuswertung: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ScoreboardPage(
+                          isTournament: false,
+                          team1: widget.team1,
+                          team2: widget.team2,
+                          totalRounds: widget.totalRounds,
+                          maxPoints: widget.maxPoints,
+                          gamesPerRound: widget.gamesPerRound,
+                          gschneidertDoppelt: widget.gschneidertDoppelt,
+                          loadedController: controller,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-            const SizedBox(height: 20),
             Expanded(
               child: PlayerHalf(
-                player: myPlayer,
+                player: 1,
                 game: game,
                 leftTeam: widget.team1,
                 rightTeam: widget.team2,
@@ -147,80 +231,59 @@ class _ZweiGeraeteGamePageState extends State<ZweiGeraeteGamePage> {
                 controller: controller,
                 onUndo: () {
                   controller.undo();
-                  _sync();
                   setState(() {});
+                  _sync();
                 },
                 onToggleTense: () {
-                  controller.toggleTense(myPlayer);
-                  _sync();
+                  controller.toggleTense(1);
                   setState(() {});
+                  _sync();
                 },
                 onPrevGame: () {
                   controller.prevGame();
-                  _sync();
                   setState(() {});
+                  _sync();
                 },
                 onNextGame: () {
                   controller.nextGame();
-                  _sync();
                   setState(() {});
+                  _sync();
                 },
                 onPickTable: (v) {
                   controller.table = v;
-                  _sync();
                   setState(() {});
+                  _sync();
                 },
                 onAddScore: (v) {
-                  controller.addScore(myPlayer, v);
-                  _sync();
+                  controller.addScore(1, v);
                   setState(() {});
+                  _sync();
                 },
                 canNext: controller.canNext,
                 canPrev: controller.canPrev,
                 currentGame: controller.currentGame,
-                viewRound: controller.currentRound,
-                onPrevRound: widget.isCoordinator
-                    ? () {
-                        if (controller.hasPrevRound(controller.currentRound)) {
-                          controller.currentRound--;
-                          _sync();
-                          setState(() {});
-                        }
-                      }
-                    : null,
-                onNextRound: widget.isCoordinator
-                    ? () {
-                        if (controller.hasNextRound(controller.currentRound)) {
-                          controller.currentRound++;
-                          _sync();
-                          setState(() {});
-                        }
-                      }
-                    : null,
+                viewRound: 0,
+                onPrevRound: () {},
+                onNextRound: () {},
+                onAuswertung: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ScoreboardPage(
+                        isTournament: false,
+                        team1: widget.team1,
+                        team2: widget.team2,
+                        totalRounds: widget.totalRounds,
+                        maxPoints: widget.maxPoints,
+                        gamesPerRound: widget.gamesPerRound,
+                        gschneidertDoppelt: widget.gschneidertDoppelt,
+                        loadedController: controller,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-            const SizedBox(height: 20),
-            if (widget.isCoordinator)
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: () {
-                    controller.newRound();
-                    _sync();
-                    setState(() {});
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade700,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text("Neue Runde", style: TextStyle(fontSize: 22)),
-                ),
-              ),
-            const SizedBox(height: 20),
           ],
         ),
       ),

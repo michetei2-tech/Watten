@@ -4,6 +4,7 @@ import '../models/game_state.dart';
 import '../widgets/app_background.dart';
 import '../widgets/save_game_dialog.dart';
 import 'start_page.dart';
+import 'scoreboard_page.dart';
 
 // PDF
 import 'package:printing/printing.dart';
@@ -27,11 +28,14 @@ class AuswertungPage extends StatelessWidget {
     final currentRound = controller.games;
 
     final List<List<GameState>> rounds = [
-      if (currentRound.any((g) => g.p1 != 0 || g.p2 != 0)) currentRound,
       ...controller.allRounds,
+      if (currentRound.any((g) => g.p1 != 0 || g.p2 != 0)) currentRound,
     ];
 
     final int gamesPerRound = controller.gamesPerRound;
+
+    final effectiveTeam1 = team1.isEmpty ? "Team 1" : team1;
+    final effectiveTeam2 = team2.isEmpty ? "Team 2" : team2;
 
     return Scaffold(
       body: AppBackground(
@@ -54,7 +58,12 @@ class AuswertungPage extends StatelessWidget {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: SingleChildScrollView(
-                    child: _buildTable(rounds, gamesPerRound),
+                    child: _buildTable(
+                      rounds,
+                      gamesPerRound,
+                      effectiveTeam1,
+                      effectiveTeam2,
+                    ),
                   ),
                 ),
               ),
@@ -63,45 +72,40 @@ class AuswertungPage extends StatelessWidget {
 
               Row(
                 children: [
-                  _button("Zurück", Colors.blue.shade700, () {
+                  _iconButton(Icons.arrow_back, Colors.blue.shade700, () {
                     Navigator.pop(context);
                   }),
 
                   const SizedBox(width: 8),
 
-                  _button("Startseite", Colors.red, () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const StartPage()),
-                      (route) => false,
-                    );
+                  _textButton("Start", Colors.red, () {
+                    _handleStartButton(context, effectiveTeam1, effectiveTeam2);
                   }),
 
                   const SizedBox(width: 8),
 
-                  _button("Speichern", Colors.blue.shade700, () async {
+                  _iconButton(Icons.save, Colors.blue.shade700, () async {
                     await showDialog(
                       context: context,
                       builder: (_) => SaveGameDialog(
                         controller: controller,
-                        team1: team1,
-                        team2: team2,
+                        team1: effectiveTeam1,
+                        team2: effectiveTeam2,
                       ),
                     );
                   }),
 
                   const SizedBox(width: 8),
 
-                  // PDF BUTTON
-                  _button("Download", Colors.blue.shade700, () {
+                  _textButton("PDF", Colors.blue.shade700, () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => PdfPreview(
                           build: (format) => AuswertungPdf(
                             controller: controller,
-                            team1: team1,
-                            team2: team2,
+                            team1: effectiveTeam1,
+                            team2: effectiveTeam2,
                           ).build(format),
                           allowPrinting: true,
                           allowSharing: true,
@@ -121,7 +125,90 @@ class AuswertungPage extends StatelessWidget {
     );
   }
 
-  Widget _button(String text, Color color, VoidCallback onTap) {
+  // ------------------------------------------------------------
+  // START BUTTON LOGIK
+  // ------------------------------------------------------------
+  Future<void> _handleStartButton(
+    BuildContext context,
+    String effectiveTeam1,
+    String effectiveTeam2,
+  ) async {
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Was möchtest du tun?"),
+        content: const Text("Wähle eine Option:"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, "end"),
+            child: const Text("Spiel beenden"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, "single"),
+            child: const Text("In Ein‑Geräte‑Modus wechseln"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, "cancel"),
+            child: const Text("Abbrechen"),
+          ),
+        ],
+      ),
+    );
+
+    if (choice == "cancel" || choice == null) return;
+
+    if (choice == "end") {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const StartPage()),
+        (route) => false,
+      );
+      return;
+    }
+
+    if (choice == "single") {
+      final teamChoice = await showDialog<String>(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Weiter mit:"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, "team1"),
+              child: Text(effectiveTeam1),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, "team2"),
+              child: Text(effectiveTeam2),
+            ),
+          ],
+        ),
+      );
+
+      if (teamChoice == null) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ScoreboardPage(
+            isTournament: false,
+            team1: effectiveTeam1,
+            team2: effectiveTeam2,
+            totalRounds: controller.totalRounds,
+            maxPoints: controller.maxPoints,
+            gamesPerRound: controller.gamesPerRound,
+            gschneidertDoppelt: controller.gschneidertDoppelt,
+            loadedController: controller,
+          ),
+        ),
+        (route) => false,
+      );
+    }
+  }
+
+  // ------------------------------------------------------------
+  // BUTTON HELPERS
+  // ------------------------------------------------------------
+  Widget _textButton(String text, Color color, VoidCallback onTap) {
     return Expanded(
       child: SizedBox(
         height: 60,
@@ -134,16 +221,55 @@ class AuswertungPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          child: Text(text, style: const TextStyle(fontSize: 18)),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _iconButton(IconData icon, Color color, VoidCallback onTap) {
+    return Expanded(
+      child: SizedBox(
+        height: 60,
+        child: ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Icon(
+              icon,
+              size: 32,
+            ),
+          ),
         ),
       ),
     );
   }
 
   // ------------------------------------------------------------
-  // UI TABELLE
+  // TABELLE
   // ------------------------------------------------------------
-  Widget _buildTable(List<List<GameState>> rounds, int gamesPerRound) {
+  Widget _buildTable(
+    List<List<GameState>> rounds,
+    int gamesPerRound,
+    String effectiveTeam1,
+    String effectiveTeam2,
+  ) {
     int totalMe = 0;
     int totalOpp = 0;
     int totalPointsMe = 0;
@@ -166,10 +292,8 @@ class AuswertungPage extends StatelessWidget {
         }
       }
 
-      final winsMe =
-          round.where((g) => g.p1 >= controller.maxPoints).length;
-      final winsOpp =
-          round.where((g) => g.p2 >= controller.maxPoints).length;
+      final winsMe = round.where((g) => g.p1 >= controller.maxPoints).length;
+      final winsOpp = round.where((g) => g.p2 >= controller.maxPoints).length;
 
       if (winsMe > winsOpp) totalRoundWinsMe++;
       if (winsOpp > winsMe) totalRoundWinsOpp++;
@@ -177,7 +301,7 @@ class AuswertungPage extends StatelessWidget {
 
     final rows = <TableRow>[];
     rows.add(_buildHeaderRow(gamesPerRound));
-    rows.addAll(_buildRoundRows(rounds, gamesPerRound));
+    rows.addAll(_buildRoundRows(rounds, gamesPerRound, effectiveTeam1, effectiveTeam2));
     rows.addAll(_buildTotalRows(
       totalMe,
       totalOpp,
@@ -186,6 +310,8 @@ class AuswertungPage extends StatelessWidget {
       totalRoundWinsMe,
       totalRoundWinsOpp,
       gamesPerRound,
+      effectiveTeam1,
+      effectiveTeam2,
     ));
 
     return Table(
@@ -210,7 +336,12 @@ class AuswertungPage extends StatelessWidget {
     );
   }
 
-  List<TableRow> _buildRoundRows(List<List<GameState>> rounds, int gamesPerRound) {
+  List<TableRow> _buildRoundRows(
+    List<List<GameState>> rounds,
+    int gamesPerRound,
+    String effectiveTeam1,
+    String effectiveTeam2,
+  ) {
     final List<TableRow> rows = [];
 
     final colorTeam1 = const Color(0xFFDCEBFF);
@@ -244,7 +375,7 @@ class AuswertungPage extends StatelessWidget {
           decoration: BoxDecoration(color: colorTeam1),
           children: [
             _cell("${r + 1}", center: true, bold: true),
-            _cell(team1.isEmpty ? "Team 1" : team1, center: true, bold: true),
+            _cell(effectiveTeam1, center: true, bold: true),
             for (int i = 0; i < gamesPerRound; i++)
               _cellGame(
                 i < round.length ? "${round[i].p1}" : "",
@@ -264,7 +395,7 @@ class AuswertungPage extends StatelessWidget {
           decoration: BoxDecoration(color: colorTeam2),
           children: [
             _cell("", center: true),
-            _cell(team2.isEmpty ? "Team 2" : team2, center: true, bold: true),
+            _cell(effectiveTeam2, center: true, bold: true),
             for (int i = 0; i < gamesPerRound; i++)
               _cellGame(
                 i < round.length ? "${round[i].p2}" : "",
@@ -291,6 +422,8 @@ class AuswertungPage extends StatelessWidget {
     int totalRoundWinsMe,
     int totalRoundWinsOpp,
     int gamesPerRound,
+    String effectiveTeam1,
+    String effectiveTeam2,
   ) {
     final base1 = const Color(0xFFDCEBFF);
     final base2 = const Color(0xFFAFC8FF);
@@ -329,7 +462,7 @@ class AuswertungPage extends StatelessWidget {
         decoration: BoxDecoration(color: row1Color),
         children: [
           _cell("Gesamt", center: true, bold: true),
-          _cell(team1.isEmpty ? "Team 1" : team1, center: true, bold: true),
+          _cell(effectiveTeam1, center: true, bold: true),
           for (int i = 0; i < gamesPerRound; i++) _cell(""),
           _cell("$totalMe", center: true, bold: true),
           _cell("$totalPointsMe", center: true, bold: true),
@@ -340,7 +473,7 @@ class AuswertungPage extends StatelessWidget {
         decoration: BoxDecoration(color: row2Color),
         children: [
           _cell("", center: true),
-          _cell(team2.isEmpty ? "Team 2" : team2, center: true, bold: true),
+          _cell(effectiveTeam2, center: true, bold: true),
           for (int i = 0; i < gamesPerRound; i++) _cell(""),
           _cell("$totalOpp", center: true, bold: true),
           _cell("$totalPointsOpp", center: true, bold: true),

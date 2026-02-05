@@ -65,10 +65,14 @@ class _EinstellungenPageState extends State<EinstellungenPage> {
                   children: [
                     _bigButton("11", maxPoints == 11, () => setState(() => maxPoints = 11)),
                     _bigButton("15", maxPoints == 15, () => setState(() => maxPoints = 15)),
-                    _bigButton("#", !(maxPoints == 11 || maxPoints == 15), () async {
-                      final value = await _pickNumber(context, maxPoints);
-                      if (value != null) setState(() => maxPoints = value);
-                    }),
+                    _iconOrNumberButton(
+                      value: maxPoints,
+                      isSelected: !(maxPoints == 11 || maxPoints == 15),
+                      onTap: () async {
+                        final value = await _pickNumber(context, maxPoints);
+                        if (value != null) setState(() => maxPoints = value);
+                      },
+                    ),
                   ],
                 ),
 
@@ -81,10 +85,14 @@ class _EinstellungenPageState extends State<EinstellungenPage> {
                   children: [
                     _bigButton("5", totalRounds == 5, () => setState(() => totalRounds = 5)),
                     _bigButton("10", totalRounds == 10, () => setState(() => totalRounds = 10)),
-                    _bigButton("#", !(totalRounds == 5 || totalRounds == 10), () async {
-                      final value = await _pickNumber(context, totalRounds);
-                      if (value != null) setState(() => totalRounds = value);
-                    }),
+                    _iconOrNumberButton(
+                      value: totalRounds,
+                      isSelected: !(totalRounds == 5 || totalRounds == 10),
+                      onTap: () async {
+                        final value = await _pickNumber(context, totalRounds);
+                        if (value != null) setState(() => totalRounds = value);
+                      },
+                    ),
                   ],
                 ),
 
@@ -97,10 +105,14 @@ class _EinstellungenPageState extends State<EinstellungenPage> {
                   children: [
                     _bigButton("5", gamesPerRound == 5, () => setState(() => gamesPerRound = 5)),
                     _bigButton("10", gamesPerRound == 10, () => setState(() => gamesPerRound = 10)),
-                    _bigButton("#", !(gamesPerRound == 5 || gamesPerRound == 10), () async {
-                      final value = await _pickNumber(context, gamesPerRound);
-                      if (value != null) setState(() => gamesPerRound = value);
-                    }),
+                    _iconOrNumberButton(
+                      value: gamesPerRound,
+                      isSelected: !(gamesPerRound == 5 || gamesPerRound == 10),
+                      onTap: () async {
+                        final value = await _pickNumber(context, gamesPerRound);
+                        if (value != null) setState(() => gamesPerRound = value);
+                      },
+                    ),
                   ],
                 ),
 
@@ -225,6 +237,46 @@ class _EinstellungenPageState extends State<EinstellungenPage> {
     );
   }
 
+  Widget _iconOrNumberButton({
+    required int value,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final bool isCustom = isSelected;
+
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: 60,
+            decoration: BoxDecoration(
+              color: isCustom ? Colors.blue.shade700 : Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isCustom ? Colors.blue.shade700 : Colors.grey.shade400,
+                width: 2,
+              ),
+            ),
+            child: Center(
+              child: isCustom
+                  ? Text(
+                      "$value",
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.grid_view, size: 28, color: Colors.black),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _modeButton(String label, String value) {
     final selected = spielmodus == value;
 
@@ -276,22 +328,7 @@ class _EinstellungenPageState extends State<EinstellungenPage> {
               ),
               itemCount: 65,
               itemBuilder: (_, index) {
-                if (index == 0) {
-                  return GestureDetector(
-                    onTap: () => Navigator.pop(ctx, -1),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade700,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Center(
-                        child: Text("∞",
-                          style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  );
-                }
+                if (index == 0) return const SizedBox.shrink();
 
                 final number = index;
 
@@ -305,7 +342,11 @@ class _EinstellungenPageState extends State<EinstellungenPage> {
                     child: Center(
                       child: Text(
                         "$number",
-                        style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

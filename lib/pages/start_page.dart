@@ -6,6 +6,7 @@ import 'setup_page.dart';
 import 'scoreboard_page.dart';
 import '../logic/score_controller.dart';
 import 'load_game_page.dart';
+import 'zwei_geraete/zwei_geraete_join_page.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -156,7 +157,36 @@ class _StartPageState extends State<StartPage> {
 
                 const SizedBox(height: 20),
 
-                // TURNIER — UNSICHTBAR, ABER IM LAYOUT
+                // NEU: AN SPIEL TEILNEHMEN
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ZweiGeraeteJoinPage(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      backgroundColor: Colors.orange.shade700,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'An Spiel teilnehmen',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // TURNIER — UNSICHTBAR
                 Visibility(
                   visible: false,
                   maintainSize: true,
@@ -165,13 +195,7 @@ class _StartPageState extends State<StartPage> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Turniermodus folgt bald!'),
-                          ),
-                        );
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         backgroundColor: Colors.orange.shade700,
