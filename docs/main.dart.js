@@ -26867,6 +26867,11 @@ _.d=d
 _.e=e
 _.f=f
 _.r=g},
+ay7:function ay7(a,b,c,d){var _=this
+_.a=a
+_.b=b
+_.c=c
+_.d=d},
 aya:function aya(a){this.a=a},
 ayb:function ayb(a){this.a=a},
 ayc:function ayc(a){this.a=a},
@@ -26875,11 +26880,6 @@ ay9:function ay9(){},
 ay5:function ay5(a){this.a=a},
 ay6:function ay6(a,b){this.a=a
 this.b=b},
-ay7:function ay7(a,b,c,d){var _=this
-_.a=a
-_.b=b
-_.c=c
-_.d=d},
 t5:function t5(a){this.a=a},
 a_S:function a_S(){this.d=!1
 this.c=this.a=null},
@@ -91691,11 +91691,23 @@ if(p==null)p=l.w
 o=B.hR(a.h(0,"gschneidertDoppelt"))
 if(o==null)o=l.x
 n=B.aE4(p,o,r,k,s,q)
-m=l.a
-if(m.d!=null){n.Q=!0
-n.as=m.c?A.nk:A.tj}m=l.c
+n.Q=!0
+n.as=l.a.c?A.nk:A.tj
+m=l.c
 m.toString
 B.cv(m,!1).fH(B.eK(new B.ay2(k,s,q,r,p,o,n),null,t.z))},
+ajC(){var s,r,q=this,p=A.u.iz(q.d.a.a),o=A.u.iz(q.e.a.a),n=q.y
+if(n!=null){s=B.aj(["team1",p,"team2",o,"maxPoints",q.f,"totalRounds",q.r,"gamesPerRound",q.w,"gschneidertDoppelt",q.x,"started",!0],t.N,t.X)
+n.c.bL(0,s)}if(q.z)return
+q.z=!0
+n=q.f
+s=q.r
+r=B.aE4(q.w,q.x,n,p,o,s)
+n=q.a
+if(n.d!=null){r.Q=!0
+r.as=n.c?A.nk:A.tj}n=q.c
+n.toString
+B.cv(n,!1).fH(B.eK(new B.ay7(q,p,o,r),null,t.z))},
 N(a){var s,r,q,p,o,n=this,m=null,l=n.a,k=l.c
 if(l.d==null)l="Spiel Setup"
 else l=k?"Spiel Setup (Spielleiter)":"Spiel Setup (Spieler)"
@@ -91721,18 +91733,7 @@ if(o!=null){q.a7(new B.ay6(q,o))
 q.GV()}return B.G(null,r)}})
 return B.H($async$z4,r)},
 NN(a,b,c,d){var s=null,r=b?A.H:A.j2
-return B.aEh(a,B.ab4(s,new B.hC(4,B.c_(12),A.iL),s,s,s,s,s,s,!0,s,s,s,s,s,s,r,!0,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,c,!0,!0,s,s,s,s,s,s,s,s,s,s,s,s,s,s),b,s,s,d)},
-ajC(){var s,r,q=this,p=A.u.iz(q.d.a.a),o=A.u.iz(q.e.a.a),n=q.y
-if(n!=null){s=B.aj(["team1",p,"team2",o,"maxPoints",q.f,"totalRounds",q.r,"gamesPerRound",q.w,"gschneidertDoppelt",q.x,"started",!0],t.N,t.X)
-n.c.bL(0,s)}if(!q.z){q.z=!0
-n=q.f
-s=q.r
-r=B.aE4(q.w,q.x,n,p,o,s)
-n=q.a
-if(n.d!=null){r.Q=!0
-r.as=n.c?A.nk:A.tj}n=q.c
-n.toString
-B.cv(n,!1).fH(B.eK(new B.ay7(q,p,o,r),null,t.z))}}}
+return B.aEh(a,B.ab4(s,new B.hC(4,B.c_(12),A.iL),s,s,s,s,s,s,!0,s,s,s,s,s,s,r,!0,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,c,!0,!0,s,s,s,s,s,s,s,s,s,s,s,s,s,s),b,s,s,d)}}
 B.ay4.prototype={
 $1(a){var s,r,q,p,o,n,m,l,k,j=a.gq6().a.a.h(0,"value")
 if(!t.f.b(j))return
@@ -91767,6 +91768,10 @@ B.ay2.prototype={
 $1(a){var s=this
 return B.RB(s.e,s.f,!1,s.r,s.d,s.a,s.b,s.c)},
 $S:65}
+B.ay7.prototype={
+$1(a){var s=this,r=s.a,q=r.r,p=r.f
+return B.RB(r.w,r.x,!1,s.d,p,s.b,s.c,q)},
+$S:65}
 B.aya.prototype={
 $1(a){return this.a.GV()},
 $S:59}
@@ -91795,10 +91800,6 @@ s.r=q.h(r,"totalRounds")
 s.w=q.h(r,"gamesPerRound")
 s.x=q.h(r,"gschneidertDoppelt")},
 $S:0}
-B.ay7.prototype={
-$1(a){var s=this,r=s.a,q=r.r,p=r.f
-return B.RB(r.w,r.x,!1,s.d,p,s.b,s.c,q)},
-$S:65}
 B.t5.prototype={
 av(){return new B.a_S()}}
 B.a_S.prototype={
@@ -101319,8 +101320,8 @@ o(i,"gQp","acy",0)
 o(i,"gQl","aca",0)
 o(i,"gQq","acz",0)
 o(i,"gQn","acc",0)
-o(i=B.IQ.prototype,"gagr","z4",9)
-o(i,"gajB","ajC",0)
+o(i=B.IQ.prototype,"gajB","ajC",0)
+o(i,"gagr","z4",9)
 o(B.JU.prototype,"gaex","oz",9)
 o(B.It.prototype,"gais","zh",9)
 k(B.QG.prototype,"gapL",0,3,null,["$3"],["Bs"],577,0,0)
@@ -101338,7 +101339,7 @@ q(B,"ju",3,null,["$3"],["aRv"],183,0)
 q(B,"aFw",3,null,["$3"],["aRu"],183,0)})();(function inheritance(){var s=hunkHelpers.mixin,r=hunkHelpers.mixinHard,q=hunkHelpers.inherit,p=hunkHelpers.inheritMany
 q(B.S,null)
 p(B.S,[B.L1,B.a3K,B.nn,B.a3S,B.LQ,B.OV,B.LR,B.Sa,B.rD,B.FI,B.qj,B.amr,B.Rd,B.NX,B.nl,B.aaT,B.LT,B.LP,B.LE,B.aie,B.xb,B.afJ,B.jd,B.Mi,B.pP,B.uq,B.LW,B.LX,B.nm,B.DQ,B.ami,B.nx,B.M_,B.zA,B.ur,B.zB,B.LV,B.zz,B.a5e,B.cr,B.zG,B.zI,B.asr,B.AH,B.uD,B.nq,B.N1,B.R2,B.a91,B.a6D,B.akq,B.O_,B.aas,B.NZ,B.NY,B.N7,B.At,B.tr,B.k,B.N5,B.a9n,B.a1d,B.Wd,B.v1,B.qk,B.B6,B.z8,B.qm,B.a9B,B.NU,B.S4,B.u5,B.Oh,B.azV,B.atc,B.OA,B.kL,B.abv,B.fi,B.abN,B.abO,B.abP,B.a9w,B.Me,B.OE,B.Cm,B.bX,B.aH,B.Mm,B.L9,B.La,B.hp,B.lH,B.cY,B.eF,B.u1,B.L0,B.pQ,B.qJ,B.a5D,B.afg,B.a4K,B.md,B.AR,B.Po,B.r4,B.vP,B.Pn,B.ahn,B.aoK,B.Qe,B.afL,B.a3Q,B.Ty,B.ahu,B.Qf,B.jT,B.E5,B.AE,B.ahw,B.ajY,B.ahB,B.M0,B.ahJ,B.OO,B.apR,B.azW,B.lv,B.xi,B.y1,B.atd,B.ahC,B.aE_,B.aig,B.a3q,B.Ep,B.hG,B.py,B.abI,B.AG,B.S0,B.RZ,B.t1,B.a8h,B.a8i,B.alR,B.alN,B.Vy,B.a1,B.iZ,B.abf,B.abh,B.amO,B.amR,B.ap0,B.QD,B.qL,B.AI,B.a4H,B.Md,B.a82,B.a83,B.Fb,B.a7Z,B.Lh,B.wS,B.jH,B.ab3,B.anJ,B.anE,B.aat,B.a7M,B.a73,B.OS,B.kr,B.kV,B.MY,B.N2,B.a6M,B.a5R,B.a9H,B.Nz,B.aa5,B.pR,B.aoT,B.ao1,B.AQ,B.zc,B.SZ,B.FP,B.tk,B.HS,B.TE,B.TD,B.aoV,B.aoc,B.lR,B.TA,B.x9,B.aDw,J.vk,B.E_,J.cZ,B.aqV,B.LL,B.aY,B.am3,B.bM,B.o6,B.lj,B.iO,B.SH,B.Sb,B.Sc,B.Nb,B.NB,B.lk,B.Om,B.AV,B.Tp,B.fn,B.pe,B.C1,B.uF,B.p6,B.j7,B.BG,B.aov,B.Pl,B.AM,B.J4,B.abW,B.de,B.cQ,B.OM,B.vo,B.xN,B.TY,B.wI,B.a_Z,B.UE,B.atw,B.a1e,B.k3,B.WA,B.Jq,B.ayE,B.BY,B.Jo,B.FZ,B.Ui,B.Hg,B.ki,B.di,B.dh,B.iz,B.oZ,B.Gg,B.lq,B.at,B.Uh,B.J7,B.Uj,B.TW,B.VB,B.arC,B.y0,B.xs,B.yh,B.aA9,B.xD,B.hL,B.au9,B.p7,B.xK,B.iX,B.Xt,B.Jx,B.GC,B.VN,B.Xi,B.J_,B.ph,B.kh,B.Sy,B.A3,B.M8,B.apP,B.a4R,B.Uo,B.LO,B.a_C,B.au1,B.aqO,B.ayD,B.a1h,B.JD,B.tL,B.fU,B.bb,B.Pw,B.EP,B.W9,B.hv,B.by,B.br,B.a01,B.wG,B.Rn,B.dp,B.JB,B.aoB,B.a_D,B.AN,B.oC,B.a5F,B.b8,B.Nt,B.Pk,B.atW,B.atX,B.Nc,B.aqG,B.J6,B.mR,B.a54,B.Pq,B.y,B.aC,B.y2,B.hB,B.J,B.C2,B.aDp,B.oD,B.nP,B.nJ,B.qP,B.oB,B.xa,B.j2,B.oi,B.Z0,B.avG,B.aEK,B.HR,B.avD,B.cT,B.Er,B.am1,B.iP,B.kM,B.qq,B.Fc,B.Fg,B.fH,B.as,B.c6,B.oc,B.a4U,B.B7,B.NK,B.a3V,B.a4J,B.a4L,B.NQ,B.anB,B.Bd,B.ap3,B.ap4,B.a6f,B.ji,B.atl,B.ayz,B.aaZ,B.ap2,B.TP,B.ab7,B.ag1,B.a4A,B.bn,B.CP,B.UF,B.afX,B.aES,B.wH,B.ku,B.pG,B.ML,B.pk,B.xM,B.o5,B.MJ,B.NR,B.MX,B.a6l,B.aae,B.jI,B.kJ,B.v0,B.aho,B.pW,B.kB,B.ER,B.a8D,B.a8C,B.lX,B.Ti,B.Ow,B.Ae,B.ns,B.ai0,B.ai2,B.w7,B.ag,B.amj,B.z5,B.CQ,B.z3,B.z2,B.pB,B.ne,B.aG,B.x0,B.X5,B.VD,B.a_T,B.Va,B.ao8,B.WS,B.h0,B.MK,B.Gn,B.Vu,B.ni,B.Zw,B.Vj,B.Jk,B.r3,B.Vm,B.Vk,B.e0,B.Wo,B.Lp,B.fQ,B.auY,B.a4,B.iM,B.eJ,B.aEU,B.iW,B.D4,B.azB,B.ap_,B.Do,B.k6,B.dx,B.d4,B.v4,B.xB,B.a9O,B.awQ,B.B8,B.VP,B.VS,B.VT,B.VQ,B.Yv,B.em,B.TS,B.UQ,B.V_,B.UV,B.UT,B.UU,B.US,B.UW,B.V3,B.In,B.V1,B.V2,B.V0,B.UY,B.UZ,B.UX,B.UR,B.Wy,B.uP,B.i4,B.yp,B.m0,B.Xo,B.Xr,B.Xq,B.Xp,B.n3,B.aEI,B.Da,B.OI,B.V5,B.yk,B.ahF,B.ahI,B.eM,B.tE,B.a_5,B.a_6,B.a_4,B.Xg,B.a0e,B.a0k,B.F8,B.a0f,B.a0i,B.a0h,B.a0j,B.a0g,B.Jc,B.aqQ,B.he,B.oW,B.HO,B.hf,B.TU,B.RD,B.Ud,B.mT,B.Un,B.Xu,B.Ut,B.Uu,B.a__,B.Uw,B.Uy,B.Uz,B.XL,B.UA,B.UC,B.UD,B.UG,B.bQ,B.UI,B.aqI,B.UK,B.UO,B.Vo,B.Vq,B.VE,B.VI,B.VU,B.amk,B.jj,B.auM,B.VY,B.W6,B.mU,B.Wb,B.Wh,B.a8Z,B.a8x,B.a8w,B.a8Y,B.Wm,B.WR,B.kP,B.vj,B.ce,B.Ny,B.Vs,B.aw8,B.BA,B.X_,B.Xj,B.MM,B.XD,B.XB,B.XC,B.XS,B.XT,B.XU,B.Y6,B.OY,B.l1,B.Yb,B.yt,B.YT,B.YW,B.Z2,B.ak_,B.Rp,B.lL,B.afo,B.TV,B.a_b,B.a_c,B.a_d,B.a_e,B.a_I,B.a_O,B.a04,B.a0b,B.a0m,B.T1,B.a0r,B.a0A,B.a0E,B.aCN,B.xE,B.We,B.a1l,B.a0G,B.a0I,B.a0K,B.a19,B.pA,B.SO,B.PF,B.ze,B.Us,B.Ns,B.a5h,B.NO,B.Up,B.apV,B.d1,B.aqP,B.aa7,B.aaI,B.UB,B.Yh,B.qx,B.kN,B.WT,B.jM,B.jN,B.WU,B.vf,B.KX,B.m5,B.Z_,B.a02,B.vZ,B.it,B.azb,B.a0p,B.Hj,B.Fj,B.ao7,B.mW,B.a0z,B.amK,B.aqW,B.av4,B.azE,B.Fv,B.DR,B.Yi,B.cD,B.arT,B.apT,B.aI,B.dg,B.a63,B.ta,B.aoI,B.au7,B.L7,B.Xb,B.OD,B.BQ,B.XM,B.a1P,B.aE,B.QX,B.dI,B.aa,B.we,B.RW,B.IP,B.axW,B.dV,B.a_r,B.dv,B.QT,B.a2f,B.f1,B.Dr,B.eP,B.RQ,B.akP,B.a_l,B.a_m,B.a_J,B.ajd,B.amy,B.amz,B.amx,B.jP,B.ajj,B.wM,B.xG,B.SE,B.FL,B.rL,B.Is,B.xA,B.aha,B.l9,B.x_,B.td,B.Fq,B.Eq,B.alQ,B.um,B.LM,B.uL,B.db,B.a_p,B.a_s,B.mQ,B.kg,B.n2,B.e4,B.a_t,B.alO,B.Ld,B.ua,B.a4B,B.Eu,B.ana,B.a4I,B.uw,B.X8,B.aac,B.BN,B.Oz,B.abG,B.X9,B.id,B.og,B.Cg,B.an4,B.abg,B.abi,B.amS,B.afh,B.Ci,B.kq,B.mc,B.a8p,B.ol,B.w4,B.a68,B.Z3,B.Z4,B.aii,B.dr,B.dQ,B.wJ,B.So,B.a3R,B.a0a,B.a0n,B.oO,B.XQ,B.ayV,B.lg,B.SX,B.wa,B.cW,B.ao9,B.anI,B.rY,B.anK,B.SW,B.Fh,B.a1T,B.a05,B.fA,B.Tk,B.aoA,B.aoZ,B.X3,B.TT,B.xX,B.p_,B.Uf,B.iI,B.Pj,B.pF,B.d9,B.TM,B.dz,B.Mh,B.N3,B.Fx,B.hM,B.rR,B.axL,B.Um,B.a9b,B.Ws,B.Wq,B.WG,B.xy,B.Wx,B.xq,B.VF,B.a6m,B.a1X,B.a1W,B.WV,B.LF,B.a4O,B.CC,B.auZ,B.ajO,B.nQ,B.qo,B.alP,B.r1,B.f_,B.LJ,B.eg,B.y_,B.MQ,B.ma,B.ao2,B.qR,B.vB,B.Cc,B.k2,B.ajT,B.Th,B.pc,B.ZQ,B.oa,B.pf,B.ag5,B.J5,B.vU,B.aeT,B.ahp,B.k0,B.ov,B.OQ,B.RC,B.akz,B.aA6,B.amv,B.RG,B.Wk,B.hg,B.TB,B.RO,B.RK,B.a70,B.a_E,B.a1A,B.a_y,B.a_B,B.hI,B.ld,B.Gy,B.EL,B.hy,B.hJ,B.hQ,B.a2q,B.T2,B.RP,B.ka,B.Fn,B.hH,B.dS,B.Gk,B.x5,B.a1c,B.Uc,B.Xf,B.Hi,B.bY,B.a1q,B.bm,B.E6,B.j5,B.es,B.a4l,B.dc,B.v6,B.Ni,B.nL,B.a66,B.D8,B.ahA,B.Be,B.agi,B.ahk,B.Oj,B.vh,B.AA,B.ee,B.hr,B.f2,B.a4V,B.hw,B.aoQ,B.te,B.anz,B.ra,B.agr,B.rb,B.bv,B.PU,B.Q2,B.Ye,B.D2,B.xZ,B.PW,B.agv,B.e1,B.hD,B.Q1,B.dE,B.e7,B.Lw,B.a4E,B.Lv,B.zj,B.a6H,B.aoW,B.nI,B.ft,B.a72,B.a3H,B.aaM,B.ei,B.Hu,B.XO,B.CL,B.agc,B.oL,B.a5z,B.anj,B.jm,B.yl,B.nS,B.tA,B.Fd,B.wV,B.qA,B.kz,B.afG,B.Yd,B.agD,B.vW,B.agS,B.Qs,B.ahS,B.om,B.oG,B.ahM,B.aa4,B.aB,B.Di,B.c7,B.kd,B.aD4,B.GR])
-p(B.nn,[B.M6,B.a3P,B.a3L,B.a3M,B.a3N,B.a59,B.aAA,B.a5a,B.amu,B.a5c,B.aqN,B.aqM,B.afD,B.aAN,B.a5d,B.aAC,B.a5s,B.a5t,B.a5o,B.a5p,B.a5q,B.a5r,B.a6K,B.aBq,B.a6N,B.aBY,B.a6O,B.arF,B.a6L,B.a6J,B.M7,B.aBe,B.aC1,B.aC0,B.a9o,B.a9q,B.aBx,B.aBy,B.aBz,B.aBw,B.a9y,B.aaq,B.aar,B.a90,B.a92,B.a9_,B.a5S,B.aAW,B.aAX,B.aAY,B.aAZ,B.aB_,B.aB0,B.aB1,B.aB2,B.abr,B.abs,B.abt,B.abu,B.abB,B.abF,B.aBU,B.afq,B.amn,B.amo,B.a8d,B.a8c,B.a88,B.a89,B.a8a,B.a86,B.a8b,B.a84,B.a8g,B.a87,B.aq2,B.aq1,B.aq3,B.aoM,B.aoN,B.aoO,B.aoP,B.ahs,B.aht,B.ahq,B.ajZ,B.apS,B.azX,B.avq,B.avt,B.avu,B.avv,B.avw,B.avx,B.avy,B.aik,B.a3t,B.a3u,B.al7,B.al8,B.aAE,B.alh,B.ald,B.aln,B.als,B.alt,B.a8j,B.a6h,B.af7,B.any,B.alA,B.alB,B.alC,B.a8_,B.a80,B.a6b,B.a6c,B.a6d,B.aaz,B.aax,B.a8T,B.aau,B.a74,B.aBk,B.a5P,B.a5v,B.aoL,B.a5_,B.Op,B.SL,B.abl,B.aBD,B.aBF,B.ayF,B.apx,B.apw,B.aAw,B.aAv,B.ayG,B.ayI,B.ayH,B.a9L,B.at2,B.at9,B.an1,B.an_,B.awX,B.awW,B.ath,B.aro,B.ace,B.au_,B.a61,B.a62,B.azP,B.aBL,B.aBV,B.aBW,B.aBr,B.abp,B.azx,B.azA,B.azy,B.azw,B.aBi,B.a4N,B.aah,B.aaf,B.a8q,B.aAJ,B.aAK,B.a8F,B.a8K,B.a8M,B.a8G,B.a8J,B.aeW,B.af_,B.ai3,B.ai6,B.ai7,B.ai8,B.ai9,B.ar_,B.aqZ,B.ar5,B.aqY,B.aqX,B.ara,B.arb,B.arc,B.arl,B.arm,B.aw3,B.aw4,B.aw2,B.aw5,B.aw6,B.a5N,B.afT,B.arn,B.a95,B.a96,B.a97,B.aBs,B.aai,B.amL,B.an5,B.atb,B.ahD,B.ahE,B.ahK,B.ak6,B.aka,B.a3D,B.a3E,B.a3F,B.aut,B.aus,B.aeI,B.arG,B.arH,B.auN,B.afb,B.apY,B.aqz,B.aqA,B.aqB,B.aqa,B.aqb,B.aqc,B.aqn,B.aqr,B.aqs,B.aqt,B.aqu,B.aqv,B.aqw,B.aqx,B.aqd,B.aqe,B.aqp,B.aq8,B.aqq,B.aq7,B.aqf,B.aqg,B.aqh,B.aqi,B.aqj,B.aqk,B.aql,B.aqm,B.aqo,B.avM,B.avK,B.a6k,B.arP,B.arM,B.arN,B.arJ,B.arK,B.arL,B.ask,B.asm,B.asp,B.asl,B.asn,B.aso,B.atm,B.ato,B.atn,B.asy,B.asz,B.asB,B.asA,B.asC,B.asD,B.asF,B.asE,B.av_,B.av0,B.av2,B.av3,B.av1,B.atC,B.atz,B.ati,B.awc,B.aw9,B.atS,B.atM,B.atJ,B.atH,B.atO,B.atP,B.atQ,B.atN,B.atK,B.atL,B.atI,B.ao3,B.auK,B.auv,B.auw,B.aux,B.auy,B.aAc,B.aAd,B.asv,B.asw,B.a8y,B.a8z,B.ap7,B.ap5,B.ap6,B.agd,B.ahL,B.auD,B.auA,B.auC,B.auB,B.auz,B.ayR,B.ayU,B.ayS,B.ayT,B.az9,B.aza,B.aB6,B.awC,B.awD,B.awE,B.awF,B.awH,B.awI,B.apu,B.aoe,B.aoj,B.aol,B.aon,B.aqT,B.aqS,B.aqU,B.a5i,B.a5j,B.a5k,B.aBb,B.aAV,B.abV,B.aqD,B.aaS,B.aaN,B.aaV,B.ab2,B.ab1,B.ayf,B.ayg,B.ayh,B.ao6,B.ao5,B.ao4,B.a9G,B.ajE,B.ajA,B.a4F,B.aiD,B.aiI,B.aiH,B.aiM,B.afk,B.afj,B.ahh,B.aiY,B.aiZ,B.aj_,B.aiW,B.aiA,B.axX,B.aws,B.awt,B.awu,B.awv,B.aww,B.awm,B.awk,B.awl,B.awp,B.awq,B.awn,B.awo,B.awr,B.aj4,B.aj6,B.aj5,B.aje,B.ajg,B.aji,B.ajh,B.ajc,B.ajb,B.ajn,B.ajl,B.ajm,B.ajk,B.ajr,B.ajq,B.ajp,B.ajs,B.ang,B.anh,B.ani,B.ajx,B.ajw,B.ajz,B.akd,B.akc,B.aoi,B.alU,B.alS,B.ay1,B.ay0,B.axZ,B.ay_,B.aAB,B.alW,B.alV,B.alE,B.alK,B.alI,B.alG,B.alJ,B.alH,B.alL,B.alM,B.ahm,B.am5,B.arq,B.ac1,B.a4z,B.af1,B.a8r,B.ajJ,B.ajK,B.ajI,B.a8B,B.anG,B.anX,B.anY,B.anZ,B.avb,B.anc,B.aAR,B.a3y,B.a3B,B.a3z,B.a3A,B.a3C,B.asT,B.asQ,B.asO,B.asP,B.asS,B.apr,B.aps,B.apt,B.azZ,B.aA_,B.asW,B.apG,B.apL,B.azD,B.azC,B.a5n,B.aA2,B.aA4,B.aA5,B.aA1,B.a5E,B.a6a,B.a6F,B.a6G,B.a7E,B.a7c,B.a7G,B.a7H,B.a7d,B.a7F,B.a7h,B.a7b,B.a7r,B.a7k,B.a7q,B.a7n,B.a7m,B.a7o,B.axM,B.a9f,B.a9e,B.aAO,B.a9j,B.a9l,B.a9k,B.avU,B.a6n,B.a6o,B.a6p,B.a6q,B.a6s,B.a6t,B.a6v,B.a6w,B.a6r,B.avR,B.avS,B.avP,B.aiz,B.atv,B.a7T,B.a7R,B.a7Q,B.a7U,B.a7W,B.a7O,B.a7N,B.a7S,B.a7P,B.agk,B.afp,B.a9U,B.a9X,B.a9Z,B.aa0,B.aa2,B.a9W,B.aru,B.arv,B.arw,B.arz,B.arA,B.arB,B.aan,B.aal,B.aak,B.aaB,B.atr,B.aaY,B.aaX,B.aaW,B.ape,B.apj,B.apk,B.apl,B.apm,B.apn,B.apo,B.apd,B.apc,B.apf,B.apg,B.aph,B.api,B.ab_,B.aB3,B.aB4,B.aB5,B.auq,B.aur,B.ac8,B.aca,B.aeR,B.aeS,B.ajV,B.ajU,B.afR,B.ax1,B.ax_,B.ax3,B.afO,B.afQ,B.afN,B.afP,B.ag3,B.awO,B.awM,B.awN,B.awL,B.ag4,B.awJ,B.awf,B.awg,B.awj,B.agb,B.awS,B.ax7,B.ax5,B.aou,B.aor,B.aoq,B.auW,B.auV,B.auS,B.afc,B.akv,B.akw,B.akx,B.aky,B.akB,B.akC,B.akD,B.akF,B.akL,B.akI,B.akK,B.axN,B.aio,B.ais,B.ait,B.amT,B.amU,B.afy,B.afz,B.afA,B.afu,B.afv,B.afw,B.afx,B.amm,B.amE,B.ayJ,B.anl,B.anm,B.ayN,B.ayM,B.ayO,B.ayP,B.ayL,B.ayK,B.ayQ,B.axR,B.axS,B.akU,B.akS,B.akT,B.akV,B.akR,B.akQ,B.axU,B.aoa,B.azh,B.azj,B.azl,B.azn,B.azp,B.aoz,B.aBd,B.aoS,B.aoX,B.ako,B.akp,B.akn,B.akk,B.akl,B.akj,B.a4g,B.a4f,B.a4e,B.a4d,B.a47,B.a48,B.a49,B.a4a,B.a4b,B.a4c,B.a40,B.a41,B.aub,B.auf,B.auj,B.auk,B.axo,B.axA,B.axz,B.axF,B.axE,B.axJ,B.axI,B.arZ,B.ay4,B.ay2,B.aya,B.ayb,B.ay8,B.ay9,B.ay5,B.ay7,B.ayj,B.ayk,B.ayr,B.ays,B.ayt,B.ayq,B.ayp,B.aym,B.ayl,B.aAj,B.aAf,B.aAe,B.aAg,B.aAh,B.aAn,B.aAo,B.aAp,B.a4m,B.a4o,B.a4n,B.avn,B.avj,B.avh,B.ave,B.aci,B.acj,B.acB,B.acC,B.acA,B.aep,B.aeq,B.ael,B.aem,B.ae9,B.aea,B.aeh,B.aei,B.aef,B.aeg,B.aej,B.aek,B.aeb,B.aec,B.aed,B.aee,B.ade,B.adf,B.add,B.aen,B.aeo,B.adb,B.adc,B.ada,B.acy,B.acz,B.act,B.acu,B.acs,B.ady,B.adz,B.adx,B.adv,B.adw,B.adu,B.ae7,B.ae8,B.adQ,B.adR,B.adN,B.adO,B.adM,B.adP,B.acV,B.acW,B.acU,B.adB,B.adC,B.adA,B.adD,B.acK,B.acL,B.acJ,B.acw,B.acx,B.acv,B.ae4,B.ae5,B.ae3,B.ae6,B.ad8,B.ad9,B.ad7,B.adT,B.adU,B.adS,B.adV,B.acY,B.acZ,B.acX,B.aeE,B.aeF,B.aeD,B.aeG,B.ads,B.adt,B.adr,B.aes,B.aet,B.aer,B.aeu,B.adh,B.adi,B.adg,B.acp,B.acq,B.aco,B.acr,B.acH,B.acI,B.acG,B.acl,B.acm,B.ack,B.acn,B.acE,B.acF,B.acD,B.adJ,B.adK,B.adI,B.adL,B.adF,B.adG,B.adE,B.adH,B.acR,B.acT,B.acQ,B.acS,B.acN,B.acP,B.acM,B.acO,B.ae0,B.ae1,B.ae_,B.ae2,B.adX,B.adY,B.adW,B.adZ,B.ad4,B.ad6,B.ad3,B.ad5,B.ad0,B.ad2,B.ad_,B.ad1,B.aeA,B.aeB,B.aez,B.aeC,B.aew,B.aex,B.aev,B.aey,B.ado,B.adq,B.adn,B.adp,B.adk,B.adm,B.adj,B.adl,B.ags,B.agm,B.agl,B.agC,B.ah4,B.a9r,B.aft,B.ajM,B.ahW,B.ahX,B.ahY,B.ahZ,B.ai_,B.aeY,B.agx,B.agy,B.agA,B.agR,B.agG,B.agO,B.agL,B.ah0,B.agZ,B.am8,B.ast,B.asu])
+p(B.nn,[B.M6,B.a3P,B.a3L,B.a3M,B.a3N,B.a59,B.aAA,B.a5a,B.amu,B.a5c,B.aqN,B.aqM,B.afD,B.aAN,B.a5d,B.aAC,B.a5s,B.a5t,B.a5o,B.a5p,B.a5q,B.a5r,B.a6K,B.aBq,B.a6N,B.aBY,B.a6O,B.arF,B.a6L,B.a6J,B.M7,B.aBe,B.aC1,B.aC0,B.a9o,B.a9q,B.aBx,B.aBy,B.aBz,B.aBw,B.a9y,B.aaq,B.aar,B.a90,B.a92,B.a9_,B.a5S,B.aAW,B.aAX,B.aAY,B.aAZ,B.aB_,B.aB0,B.aB1,B.aB2,B.abr,B.abs,B.abt,B.abu,B.abB,B.abF,B.aBU,B.afq,B.amn,B.amo,B.a8d,B.a8c,B.a88,B.a89,B.a8a,B.a86,B.a8b,B.a84,B.a8g,B.a87,B.aq2,B.aq1,B.aq3,B.aoM,B.aoN,B.aoO,B.aoP,B.ahs,B.aht,B.ahq,B.ajZ,B.apS,B.azX,B.avq,B.avt,B.avu,B.avv,B.avw,B.avx,B.avy,B.aik,B.a3t,B.a3u,B.al7,B.al8,B.aAE,B.alh,B.ald,B.aln,B.als,B.alt,B.a8j,B.a6h,B.af7,B.any,B.alA,B.alB,B.alC,B.a8_,B.a80,B.a6b,B.a6c,B.a6d,B.aaz,B.aax,B.a8T,B.aau,B.a74,B.aBk,B.a5P,B.a5v,B.aoL,B.a5_,B.Op,B.SL,B.abl,B.aBD,B.aBF,B.ayF,B.apx,B.apw,B.aAw,B.aAv,B.ayG,B.ayI,B.ayH,B.a9L,B.at2,B.at9,B.an1,B.an_,B.awX,B.awW,B.ath,B.aro,B.ace,B.au_,B.a61,B.a62,B.azP,B.aBL,B.aBV,B.aBW,B.aBr,B.abp,B.azx,B.azA,B.azy,B.azw,B.aBi,B.a4N,B.aah,B.aaf,B.a8q,B.aAJ,B.aAK,B.a8F,B.a8K,B.a8M,B.a8G,B.a8J,B.aeW,B.af_,B.ai3,B.ai6,B.ai7,B.ai8,B.ai9,B.ar_,B.aqZ,B.ar5,B.aqY,B.aqX,B.ara,B.arb,B.arc,B.arl,B.arm,B.aw3,B.aw4,B.aw2,B.aw5,B.aw6,B.a5N,B.afT,B.arn,B.a95,B.a96,B.a97,B.aBs,B.aai,B.amL,B.an5,B.atb,B.ahD,B.ahE,B.ahK,B.ak6,B.aka,B.a3D,B.a3E,B.a3F,B.aut,B.aus,B.aeI,B.arG,B.arH,B.auN,B.afb,B.apY,B.aqz,B.aqA,B.aqB,B.aqa,B.aqb,B.aqc,B.aqn,B.aqr,B.aqs,B.aqt,B.aqu,B.aqv,B.aqw,B.aqx,B.aqd,B.aqe,B.aqp,B.aq8,B.aqq,B.aq7,B.aqf,B.aqg,B.aqh,B.aqi,B.aqj,B.aqk,B.aql,B.aqm,B.aqo,B.avM,B.avK,B.a6k,B.arP,B.arM,B.arN,B.arJ,B.arK,B.arL,B.ask,B.asm,B.asp,B.asl,B.asn,B.aso,B.atm,B.ato,B.atn,B.asy,B.asz,B.asB,B.asA,B.asC,B.asD,B.asF,B.asE,B.av_,B.av0,B.av2,B.av3,B.av1,B.atC,B.atz,B.ati,B.awc,B.aw9,B.atS,B.atM,B.atJ,B.atH,B.atO,B.atP,B.atQ,B.atN,B.atK,B.atL,B.atI,B.ao3,B.auK,B.auv,B.auw,B.aux,B.auy,B.aAc,B.aAd,B.asv,B.asw,B.a8y,B.a8z,B.ap7,B.ap5,B.ap6,B.agd,B.ahL,B.auD,B.auA,B.auC,B.auB,B.auz,B.ayR,B.ayU,B.ayS,B.ayT,B.az9,B.aza,B.aB6,B.awC,B.awD,B.awE,B.awF,B.awH,B.awI,B.apu,B.aoe,B.aoj,B.aol,B.aon,B.aqT,B.aqS,B.aqU,B.a5i,B.a5j,B.a5k,B.aBb,B.aAV,B.abV,B.aqD,B.aaS,B.aaN,B.aaV,B.ab2,B.ab1,B.ayf,B.ayg,B.ayh,B.ao6,B.ao5,B.ao4,B.a9G,B.ajE,B.ajA,B.a4F,B.aiD,B.aiI,B.aiH,B.aiM,B.afk,B.afj,B.ahh,B.aiY,B.aiZ,B.aj_,B.aiW,B.aiA,B.axX,B.aws,B.awt,B.awu,B.awv,B.aww,B.awm,B.awk,B.awl,B.awp,B.awq,B.awn,B.awo,B.awr,B.aj4,B.aj6,B.aj5,B.aje,B.ajg,B.aji,B.ajh,B.ajc,B.ajb,B.ajn,B.ajl,B.ajm,B.ajk,B.ajr,B.ajq,B.ajp,B.ajs,B.ang,B.anh,B.ani,B.ajx,B.ajw,B.ajz,B.akd,B.akc,B.aoi,B.alU,B.alS,B.ay1,B.ay0,B.axZ,B.ay_,B.aAB,B.alW,B.alV,B.alE,B.alK,B.alI,B.alG,B.alJ,B.alH,B.alL,B.alM,B.ahm,B.am5,B.arq,B.ac1,B.a4z,B.af1,B.a8r,B.ajJ,B.ajK,B.ajI,B.a8B,B.anG,B.anX,B.anY,B.anZ,B.avb,B.anc,B.aAR,B.a3y,B.a3B,B.a3z,B.a3A,B.a3C,B.asT,B.asQ,B.asO,B.asP,B.asS,B.apr,B.aps,B.apt,B.azZ,B.aA_,B.asW,B.apG,B.apL,B.azD,B.azC,B.a5n,B.aA2,B.aA4,B.aA5,B.aA1,B.a5E,B.a6a,B.a6F,B.a6G,B.a7E,B.a7c,B.a7G,B.a7H,B.a7d,B.a7F,B.a7h,B.a7b,B.a7r,B.a7k,B.a7q,B.a7n,B.a7m,B.a7o,B.axM,B.a9f,B.a9e,B.aAO,B.a9j,B.a9l,B.a9k,B.avU,B.a6n,B.a6o,B.a6p,B.a6q,B.a6s,B.a6t,B.a6v,B.a6w,B.a6r,B.avR,B.avS,B.avP,B.aiz,B.atv,B.a7T,B.a7R,B.a7Q,B.a7U,B.a7W,B.a7O,B.a7N,B.a7S,B.a7P,B.agk,B.afp,B.a9U,B.a9X,B.a9Z,B.aa0,B.aa2,B.a9W,B.aru,B.arv,B.arw,B.arz,B.arA,B.arB,B.aan,B.aal,B.aak,B.aaB,B.atr,B.aaY,B.aaX,B.aaW,B.ape,B.apj,B.apk,B.apl,B.apm,B.apn,B.apo,B.apd,B.apc,B.apf,B.apg,B.aph,B.api,B.ab_,B.aB3,B.aB4,B.aB5,B.auq,B.aur,B.ac8,B.aca,B.aeR,B.aeS,B.ajV,B.ajU,B.afR,B.ax1,B.ax_,B.ax3,B.afO,B.afQ,B.afN,B.afP,B.ag3,B.awO,B.awM,B.awN,B.awL,B.ag4,B.awJ,B.awf,B.awg,B.awj,B.agb,B.awS,B.ax7,B.ax5,B.aou,B.aor,B.aoq,B.auW,B.auV,B.auS,B.afc,B.akv,B.akw,B.akx,B.aky,B.akB,B.akC,B.akD,B.akF,B.akL,B.akI,B.akK,B.axN,B.aio,B.ais,B.ait,B.amT,B.amU,B.afy,B.afz,B.afA,B.afu,B.afv,B.afw,B.afx,B.amm,B.amE,B.ayJ,B.anl,B.anm,B.ayN,B.ayM,B.ayO,B.ayP,B.ayL,B.ayK,B.ayQ,B.axR,B.axS,B.akU,B.akS,B.akT,B.akV,B.akR,B.akQ,B.axU,B.aoa,B.azh,B.azj,B.azl,B.azn,B.azp,B.aoz,B.aBd,B.aoS,B.aoX,B.ako,B.akp,B.akn,B.akk,B.akl,B.akj,B.a4g,B.a4f,B.a4e,B.a4d,B.a47,B.a48,B.a49,B.a4a,B.a4b,B.a4c,B.a40,B.a41,B.aub,B.auf,B.auj,B.auk,B.axo,B.axA,B.axz,B.axF,B.axE,B.axJ,B.axI,B.arZ,B.ay4,B.ay2,B.ay7,B.aya,B.ayb,B.ay8,B.ay9,B.ay5,B.ayj,B.ayk,B.ayr,B.ays,B.ayt,B.ayq,B.ayp,B.aym,B.ayl,B.aAj,B.aAf,B.aAe,B.aAg,B.aAh,B.aAn,B.aAo,B.aAp,B.a4m,B.a4o,B.a4n,B.avn,B.avj,B.avh,B.ave,B.aci,B.acj,B.acB,B.acC,B.acA,B.aep,B.aeq,B.ael,B.aem,B.ae9,B.aea,B.aeh,B.aei,B.aef,B.aeg,B.aej,B.aek,B.aeb,B.aec,B.aed,B.aee,B.ade,B.adf,B.add,B.aen,B.aeo,B.adb,B.adc,B.ada,B.acy,B.acz,B.act,B.acu,B.acs,B.ady,B.adz,B.adx,B.adv,B.adw,B.adu,B.ae7,B.ae8,B.adQ,B.adR,B.adN,B.adO,B.adM,B.adP,B.acV,B.acW,B.acU,B.adB,B.adC,B.adA,B.adD,B.acK,B.acL,B.acJ,B.acw,B.acx,B.acv,B.ae4,B.ae5,B.ae3,B.ae6,B.ad8,B.ad9,B.ad7,B.adT,B.adU,B.adS,B.adV,B.acY,B.acZ,B.acX,B.aeE,B.aeF,B.aeD,B.aeG,B.ads,B.adt,B.adr,B.aes,B.aet,B.aer,B.aeu,B.adh,B.adi,B.adg,B.acp,B.acq,B.aco,B.acr,B.acH,B.acI,B.acG,B.acl,B.acm,B.ack,B.acn,B.acE,B.acF,B.acD,B.adJ,B.adK,B.adI,B.adL,B.adF,B.adG,B.adE,B.adH,B.acR,B.acT,B.acQ,B.acS,B.acN,B.acP,B.acM,B.acO,B.ae0,B.ae1,B.ae_,B.ae2,B.adX,B.adY,B.adW,B.adZ,B.ad4,B.ad6,B.ad3,B.ad5,B.ad0,B.ad2,B.ad_,B.ad1,B.aeA,B.aeB,B.aez,B.aeC,B.aew,B.aex,B.aev,B.aey,B.ado,B.adq,B.adn,B.adp,B.adk,B.adm,B.adj,B.adl,B.ags,B.agm,B.agl,B.agC,B.ah4,B.a9r,B.aft,B.ajM,B.ahW,B.ahX,B.ahY,B.ahZ,B.ai_,B.aeY,B.agx,B.agy,B.agA,B.agR,B.agG,B.agO,B.agL,B.ah0,B.agZ,B.am8,B.ast,B.asu])
 p(B.M6,[B.a3O,B.ams,B.amt,B.aC2,B.afC,B.afE,B.ag_,B.ag0,B.a4Z,B.a5f,B.a9p,B.asx,B.a9z,B.a9A,B.aBI,B.a93,B.aAy,B.abC,B.abD,B.abE,B.abx,B.aby,B.abz,B.a9D,B.a9E,B.age,B.abT,B.abS,B.a8e,B.a8f,B.aBK,B.ahv,B.avr,B.avs,B.ate,B.aih,B.aij,B.a3r,B.a3s,B.alo,B.ajS,B.alr,B.alm,B.a8m,B.a8l,B.a8k,B.af8,B.alD,B.aay,B.anF,B.a99,B.a9a,B.aAS,B.aoU,B.a81,B.a51,B.aBS,B.ahP,B.apy,B.apz,B.azu,B.azt,B.aAu,B.apB,B.apC,B.apE,B.apF,B.apD,B.apA,B.a9K,B.a9J,B.asY,B.at5,B.at4,B.at1,B.at_,B.asZ,B.at8,B.at7,B.at6,B.an2,B.amZ,B.ayB,B.ayA,B.apa,B.aq6,B.aq5,B.av9,B.aAz,B.aBa,B.awV,B.azS,B.azR,B.a55,B.a56,B.aBj,B.a4M,B.aag,B.a8N,B.a8I,B.a8H,B.aia,B.aib,B.ar1,B.ar2,B.ar0,B.ar3,B.ar4,B.ar7,B.ar8,B.arg,B.arf,B.are,B.a5J,B.a5I,B.a5K,B.a5L,B.ard,B.ark,B.ari,B.arj,B.arh,B.a94,B.a4C,B.a52,B.a9Q,B.a9P,B.a9R,B.a9S,B.a9v,B.a9t,B.a9u,B.ac3,B.ac6,B.ac5,B.ac4,B.a6R,B.a6W,B.a6X,B.a6S,B.a6T,B.a6U,B.a6V,B.ahH,B.ahO,B.ak8,B.ak9,B.ak4,B.ak5,B.anr,B.ans,B.anu,B.anv,B.anw,B.ant,B.a4x,B.a4y,B.a4v,B.a4w,B.a4t,B.a4u,B.a4s,B.aDh,B.aoG,B.aoH,B.aeH,B.aq0,B.apZ,B.aq_,B.auP,B.apX,B.aqC,B.aqy,B.aq9,B.avO,B.avN,B.avI,B.avH,B.avJ,B.arO,B.arI,B.aAQ,B.aAP,B.aty,B.atB,B.atD,B.atx,B.atA,B.atj,B.awa,B.atR,B.aze,B.azd,B.azf,B.avA,B.avB,B.avz,B.asG,B.ak1,B.ak0,B.auJ,B.auI,B.auH,B.auF,B.auG,B.auE,B.ayW,B.ayY,B.ayX,B.ayZ,B.az1,B.az2,B.az3,B.az4,B.az5,B.az6,B.az0,B.az_,B.azr,B.azq,B.aof,B.aog,B.aok,B.aoo,B.aaK,B.aaJ,B.aua,B.aaP,B.aaQ,B.afr,B.azc,B.aiB,B.ajC,B.ajD,B.arU,B.apU,B.atV,B.aiE,B.abQ,B.abR,B.afn,B.afm,B.afl,B.agh,B.agg,B.agf,B.aiX,B.aj0,B.aj1,B.ajf,B.ajo,B.akf,B.akg,B.akh,B.aki,B.am4,B.a8s,B.a8t,B.aif,B.ajG,B.ajH,B.ajF,B.an9,B.an7,B.ao_,B.ao0,B.ap8,B.asR,B.asM,B.asN,B.asL,B.apq,B.asV,B.asU,B.apK,B.apI,B.apJ,B.apH,B.aA3,B.aoY,B.ajP,B.ajQ,B.a78,B.a7s,B.a7t,B.a7u,B.a7v,B.a7w,B.a7x,B.a7y,B.a7z,B.a7A,B.a7B,B.a7C,B.a7D,B.a7i,B.a7I,B.a79,B.a7a,B.a75,B.a77,B.a7J,B.a7K,B.a7L,B.a7e,B.a7f,B.a7g,B.a7j,B.asH,B.asI,B.asJ,B.asK,B.a4P,B.a5A,B.a5B,B.a9T,B.a9V,B.a9Y,B.aa_,B.aa1,B.aa3,B.ary,B.arx,B.aEF,B.atu,B.atq,B.ats,B.att,B.a3J,B.atT,B.au4,B.au5,B.au6,B.aup,B.auL,B.afa,B.ax2,B.ax0,B.awZ,B.afM,B.awx,B.av5,B.ag9,B.ag8,B.aga,B.ag7,B.ag6,B.av6,B.av8,B.av7,B.atf,B.awR,B.ajL,B.axa,B.axb,B.ax9,B.ax4,B.ax8,B.ax6,B.aos,B.aot,B.auQ,B.aff,B.afe,B.aku,B.axV,B.akA,B.akH,B.akJ,B.air,B.aip,B.aiq,B.ail,B.aim,B.ain,B.amc,B.ame,B.amf,B.amg,B.amp,B.amC,B.amD,B.amB,B.amF,B.and,B.axT,B.azg,B.azi,B.azk,B.azm,B.azo,B.app,B.aBc,B.a4h,B.a4i,B.a4j,B.a4k,B.a44,B.a45,B.a46,B.a42,B.a43,B.auc,B.aui,B.aug,B.aud,B.aue,B.auh,B.auo,B.axp,B.axm,B.axi,B.axj,B.axn,B.axk,B.axl,B.axD,B.axB,B.axw,B.axx,B.axy,B.axH,B.axG,B.axt,B.axu,B.axv,B.axC,B.axK,B.axq,B.axr,B.axs,B.as9,B.as8,B.asa,B.as7,B.asb,B.as6,B.asc,B.as5,B.asd,B.as4,B.ase,B.as3,B.asf,B.as2,B.asg,B.as1,B.ash,B.as0,B.asi,B.as_,B.asj,B.arW,B.arV,B.arX,B.ay3,B.ayc,B.ay6,B.ayi,B.ayu,B.ayv,B.ayw,B.ayx,B.ayy,B.ayn,B.ayo,B.aAi,B.aAk,B.aAl,B.aAm,B.aAq,B.avi,B.avk,B.avl,B.avm,B.avf,B.avc,B.axc,B.axd,B.axe,B.agu,B.a9s,B.ajN,B.ahV,B.agE,B.agQ,B.agI,B.agH,B.agM,B.agK,B.agN,B.agJ,B.agP,B.ah2,B.ah1,B.ah_,B.agY,B.agT,B.agU,B.agV,B.agW,B.agX,B.aBP,B.aBO])
 p(B.LR,[B.up,B.LU,B.LZ,B.uo])
 q(B.LY,B.Rd)
