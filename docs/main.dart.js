@@ -91606,14 +91606,16 @@ r=(s==null?$.fX=$.pw():s).nm("[DEFAULT]")
 B.h3(r,$.tW(),!0)
 s=B.AU(new B.iP(r))
 q=p.a.d
-p.y=B.Ag(s.gqu().pJ("sessions/"+B.m(q)+"/setup"))
+p.y=B.Ag(s.gqu().pJ("sessions/"+B.m(q)))
 if(p.a.c)p.GV()
 else p.aeI()}},
 GV(){var s,r=this,q=r.y
 if(q==null)return
 s=B.aj(["team1",A.u.iz(r.d.a.a),"team2",A.u.iz(r.e.a.a),"maxPoints",r.f,"totalRounds",r.r,"gamesPerRound",r.w,"gschneidertDoppelt",r.x],t.N,t.X)
 q.c.bL(0,s)},
-aeI(){this.y.gZ3().kA(new B.axX(this))},
+aeI(){var s=this.y
+if(s==null)return
+s.gZ3().kA(new B.axX(this))},
 aaz(a){var s,r,q,p,o,n,m=this,l=B.bL(a.h(0,"team1"))
 if(l==null)l=""
 s=B.bL(a.h(0,"team2"))
@@ -91846,10 +91848,10 @@ m=(o==null?$.fX=$.pw():o).nm("[DEFAULT]")
 B.h3(m,n,!0)
 n=B.AU(new B.iP(m))
 o=q.d
-o=B.Ag(n.gqu().pJ("sessions/"+o+"/setup"))
+o=B.Ag(n.gqu().pJ("sessions/"+o))
 q.f=o
 s=3
-return B.K(o.c.cq(0,B.aj(["team1","","team2","","maxPoints",11,"totalRounds",5,"gamesPerRound",5,"gschneidertDoppelt",!0,"started",!1],p,t.K)),$async$uu)
+return B.K(o.c.cq(0,B.aj(["team1","","team2","","maxPoints",11,"totalRounds",5,"gamesPerRound",5,"gschneidertDoppelt",!0,"started",!1,"coordinatorConnected",!0,"playerConnected",!1,"controller",null],p,t.X)),$async$uu)
 case 3:q.e.gZ3().kA(new B.aA7(q))
 return B.G(null,r)}})
 return B.H($async$uu,r)},
@@ -91905,7 +91907,7 @@ n=(l==null?$.fX=$.pw():l).nm("[DEFAULT]")
 B.h3(n,o,!0)
 l="sessions/"+j
 s=4
-return B.K(B.Ag(B.AU(new B.iP(n)).gqu().pJ(l+"/setup")).kM(0),$async$oA)
+return B.K(B.Ag(B.AU(new B.iP(n)).gqu().pJ(l)).kM(0),$async$oA)
 case 4:if(b.a.a.h(0,"value")==null){p.a7(new B.aAe(p))
 s=1
 break}k=$.fX
