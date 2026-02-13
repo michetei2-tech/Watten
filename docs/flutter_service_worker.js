@@ -31,7 +31,7 @@ const RESOURCES = {"assets/shaders/stretch_effect.frag": "40d68efbbf360632f614c7
 "index.html": "6a66e087703894601c59fb9aa9d3c673",
 "/": "6a66e087703894601c59fb9aa9d3c673",
 "main.dart.js": "a745400f2988ec7465e8e1d8b34b1a10",
-"flutter_bootstrap.js": "2c34612c595fd97247aa4591b6832143",
+"flutter_bootstrap.js": "52f7d0c1ccc21818501b2b4936016f1e",
 "version.json": "322dfa94430cc69aa45ce83495f46466",
 "manifest.json": "8e66e1314dbabf0aa13062137d7bf013",
 "_redirects": "5f52dbefcf63c9f677ace09fcf8bc7d8",
