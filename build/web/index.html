@@ -7,7 +7,6 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="Flutter Web App">
 
-  <!-- Wichtig für Mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <meta name="mobile-web-app-capable" content="yes">
@@ -18,12 +17,14 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Watten</title>
-  <link rel="manifest" href="manifest.json">
+
+  <!-- WICHTIG: absoluter Pfad für GitHub Pages -->
+  <link rel="manifest" href="/Watten/manifest.json">
 </head>
 
 <body>
 
-  <!-- PWA Install-Bridge -->
+  <!-- PWA Install-Bridge (Flutter-kompatibel) -->
   <script src="install.js"></script>
 
   <!-- Flutter Bootstrap -->
