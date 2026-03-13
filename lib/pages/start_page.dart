@@ -6,6 +6,7 @@ import 'setup_page.dart';
 import 'scoreboard_page.dart';
 import '../logic/score_controller.dart';
 import 'load_game_page.dart';
+import '../widgets/pwa_install_button.dart'; // <-- NEU
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -53,138 +54,147 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AppBackground(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Spielmodus wählen',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade800,
-                  ),
-                ),
+      body: Stack(
+        children: [
 
-                const SizedBox(height: 40),
-
-                // SPIEL FORTSETZEN
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: hasLastGame ? () => _loadLastGame(context) : null,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      backgroundColor: hasLastGame
-                          ? Colors.green.shade700
-                          : Colors.grey.shade500,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+          // --- DEINE NORMALE STARTSEITE ---
+          AppBackground(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Spielmodus wählen',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade800,
                       ),
                     ),
-                    child: const Text(
-                      'Spiel fortsetzen',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                ),
 
-                const SizedBox(height: 20),
+                    const SizedBox(height: 40),
 
-                // FREIES SPIEL
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      SharedPreferences.getInstance()
-                          .then((prefs) => prefs.remove("lastGame"));
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const SetupPage(),
+                    // SPIEL FORTSETZEN
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: hasLastGame ? () => _loadLastGame(context) : null,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          backgroundColor: hasLastGame
+                              ? Colors.green.shade700
+                              : Colors.grey.shade500,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                      ).then((_) => _checkLastGame());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      backgroundColor: Colors.blue.shade700,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Freies Spiel',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // SPIEL LADEN
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const LoadGamePage(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      backgroundColor: Colors.blue.shade600,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Spiel laden',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // TURNIER — UNSICHTBAR
-                Visibility(
-                  visible: false,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  maintainState: true,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        backgroundColor: Colors.orange.shade700,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        child: const Text(
+                          'Spiel fortsetzen',
+                          style: TextStyle(fontSize: 24),
                         ),
                       ),
-                      child: const Text(
-                        'Turnier',
-                        style: TextStyle(fontSize: 24),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // FREIES SPIEL
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          SharedPreferences.getInstance()
+                              .then((prefs) => prefs.remove("lastGame"));
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SetupPage(),
+                            ),
+                          ).then((_) => _checkLastGame());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          backgroundColor: Colors.blue.shade700,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Freies Spiel',
+                          style: TextStyle(fontSize: 24),
+                        ),
                       ),
                     ),
-                  ),
+
+                    const SizedBox(height: 20),
+
+                    // SPIEL LADEN
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const LoadGamePage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          backgroundColor: Colors.blue.shade600,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Spiel laden',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // TURNIER — UNSICHTBAR
+                    Visibility(
+                      visible: false,
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      maintainState: true,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            backgroundColor: Colors.orange.shade700,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            'Turnier',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+
+          // --- ORANGER INSTALL-BUTTON ---
+          const PwaInstallButton(),
+        ],
       ),
     );
   }

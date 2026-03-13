@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'pages/start_page.dart';
 import 'widgets/responsive_scaler.dart';
+import 'services/pwa_install_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Firebase entfernt – keine Initialisierung mehr nötig
+  // PWA-Install-Service aktivieren
+  PwaInstallService().initialize();
 
   runApp(const MyApp());
 }
