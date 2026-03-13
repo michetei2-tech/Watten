@@ -32,5 +32,8 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "serviceworker": {
+    "src": "flutter_service_worker.js"
+  }
 }
