@@ -22,6 +22,9 @@ dependencies:
   pdf: ^3.10.4
   printing: ^5.12.0
 
+  # JS‑Interop für Web (Pflicht für PWA‑Install)
+  js: ^0.6.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -30,6 +33,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
-  assets:
-    - assets/
