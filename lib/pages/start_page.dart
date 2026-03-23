@@ -165,7 +165,7 @@ class _StartPageState extends State<StartPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          html.window.open('assets/anleitung.pdf', '_blank');
+                          html.window.open('assets/assets/anleitung.pdf', '_blank');
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 20),
