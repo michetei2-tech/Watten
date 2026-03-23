@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:html' as html;
 
 import '../widgets/app_background.dart';
 import 'setup_page.dart';
 import 'scoreboard_page.dart';
 import '../logic/score_controller.dart';
 import 'load_game_page.dart';
-import '../widgets/pwa_install_button.dart'; // <-- NEU
+import '../widgets/pwa_install_button.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -56,8 +57,6 @@ class _StartPageState extends State<StartPage> {
     return Scaffold(
       body: Stack(
         children: [
-
-          // --- DEINE NORMALE STARTSEITE ---
           AppBackground(
             child: Center(
               child: Padding(
@@ -161,28 +160,24 @@ class _StartPageState extends State<StartPage> {
 
                     const SizedBox(height: 20),
 
-                    // TURNIER — UNSICHTBAR
-                    Visibility(
-                      visible: false,
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      maintainState: true,
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            backgroundColor: Colors.orange.shade700,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                    // ANLEITUNG
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          html.window.open('assets/anleitung.pdf', '_blank');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          backgroundColor: Colors.purple.shade700,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text(
-                            'Turnier',
-                            style: TextStyle(fontSize: 24),
-                          ),
+                        ),
+                        child: const Text(
+                          'Anleitung',
+                          style: TextStyle(fontSize: 24),
                         ),
                       ),
                     ),
@@ -192,7 +187,6 @@ class _StartPageState extends State<StartPage> {
             ),
           ),
 
-          // --- ORANGER INSTALL-BUTTON ---
           const PwaInstallButton(),
         ],
       ),
