@@ -15,7 +15,6 @@ class PlayerHalf extends StatefulWidget {
   final VoidCallback onPrevGame;
   final VoidCallback onNextGame;
 
-  final Function(int?) onPickTable;
   final Function(int points) onAddScore;
 
   final bool canNext;
@@ -41,7 +40,6 @@ class PlayerHalf extends StatefulWidget {
     required this.onToggleTense,
     required this.onPrevGame,
     required this.onNextGame,
-    required this.onPickTable,
     required this.onAddScore,
     required this.canNext,
     required this.canPrev,
@@ -124,26 +122,29 @@ class _PlayerHalfState extends State<PlayerHalf> {
 
                           Row(
                             children: [
+                              // ---------------------------------------------------------
+                              // FIX: Tisch nur anzeigen, NICHT auswählbar
+                              // ---------------------------------------------------------
                               SizedBox(
                                 width: 90,
                                 height: 40,
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    final selected = await _selectTable(context);
-                                    widget.onPickTable(selected);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue.shade600,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.shade600,
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
+                                  alignment: Alignment.center,
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: Text(
-                                      widget.table?.toString() ?? "Tisch",
-                                      style: const TextStyle(fontSize: 16),
+                                      widget.table == null
+                                          ? "Tisch"
+                                          : "Tisch ${widget.table}",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -353,7 +354,7 @@ class _PlayerHalfState extends State<PlayerHalf> {
                 ),
 
                 // -------------------------------------------------------------------
-                // MINIMALER FIX: Nächste Runde (orange) / Auswertung (rot)
+                // Buttons für nächste Runde / Auswertung
                 // -------------------------------------------------------------------
                 if (isCurrentRound &&
                     widget.currentGame == widget.controller.currentGame &&
@@ -454,61 +455,6 @@ class _PlayerHalfState extends State<PlayerHalf> {
                 ),
               ),
       ),
-    );
-  }
-
-  // ---------------------------------------------------------------------------
-  // TISCH-AUSWAHL – BottomSheet
-  // ---------------------------------------------------------------------------
-  Future<int?> _selectTable(BuildContext context) async {
-    final bool flip = widget.player == 2;
-
-    return showModalBottomSheet<int>(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return RotatedBox(
-          quarterTurns: flip ? 2 : 0,
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: 99,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.2,
-                ),
-                itemBuilder: (_, i) {
-                  final value = i + 1;
-                  return ElevatedButton(
-                    onPressed: () => Navigator.of(ctx).pop(value),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Text(
-                      '$value',
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 
